@@ -34,7 +34,8 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-Bold",
     borderBottomWidth: 1,
     borderBottomColor: "white",
-    marginTop: 200
+    marginTop: 200,
+    marginBottom: 30
   },
   recived: {
     color: 'white',
@@ -43,6 +44,26 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 35,
     marginBottom: 25,
+  },
+  inputCode:{
+    fontFamily: "Poppins-Bold",
+    borderBottomWidth: 1,
+    borderBottomColor: "white",
+    marginTop: 200,
+    color: 'white'
+  },
+  inputPassword:{
+    fontFamily: "Poppins-Bold",
+    borderBottomWidth: 1,
+    borderBottomColor: "white",
+    marginVertical: 10,
+    color: 'white'
+  },
+  iconEye:{
+    color: 'white',
+    position: 'relative',
+    top: -43,
+    right: -290
   }
 });
 

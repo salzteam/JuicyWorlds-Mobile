@@ -1,5 +1,5 @@
 import { ActionType } from "redux-promise-middleware";
-import { register, login, forgot, reset, logout } from "../../utils/auth";
+import { register, login, forgot, logout } from "../../utils/auth";
 import { getProfile } from "../../utils/user";
 import { actionStrings } from "./actionStrings";
 
@@ -51,6 +51,20 @@ const registerFulfilled = (data) => ({
 });
 // ===================== END =======================
 
+// =================== RESET PASSWORD =====================
+const resetPending = () => ({
+  type: actionStrings.authForgot.concat("_", Pending),
+});
+const resetRejected = (error) => ({
+  type: actionStrings.authForgot.concat("_", Rejected),
+  payload: { error },
+});
+const resetFulfilled = (data) => ({
+  type: actionStrings.authForgot.concat("_", Fulfilled),
+  payload: { data },
+});
+// ===================== END =======================
+
   const loginThunk = (body, cbSuccess, cbDenied) => {
     return async dispatch => {
       try {
@@ -98,10 +112,27 @@ const registerFulfilled = (data) => ({
     }
   }
 
+  const getPin = (body,cbSuccess, cbNavigation, cbDenied) =>{
+    return async dispatch => {
+      try {
+        dispatch(resetPending())
+        const result = await forgot(body)
+        dispatch(resetFulfilled())
+        typeof cbSuccess === "function" && cbSuccess(result.data.data.code);
+        typeof cbNavigation === "function" && cbNavigation();
+      } catch (error) {
+        dispatch(resetRejected(error.response.data.message || error.response.data.msg))
+        console.log(error.response.data.message || error.response.data.msg);
+          typeof cbDenied === "function" && cbDenied(error.response.data.message || error.response.data.msg);
+      }
+    }
+  }
+
   const authAction = {
     loginThunk,
     logoutThunk,
-    registerThunk
+    registerThunk,
+    getPin
   };
   
   export default authAction;

@@ -16,3 +16,8 @@ export const register = body => {
   const URL = `${BaseUrl}/users/register`;
   return axios.post(URL, body);
 }
+
+export const forgot = body => {
+  const URL = `${BaseUrl}/auth`;
+  return axios.patch(URL, body);
+}

@@ -82,7 +82,7 @@ const Login = () => {
                         activeOpacity={0.8}>
                         <View
                             style={{
-                                marginVertical: 15,
+                            marginVertical: 15,
                             backgroundColor: "white",
                             height: 70,
                             width: width/1.1,

@@ -15,7 +15,8 @@ const authReducer = (prevState = initialState, { payload, type }) => {
   const {
     authLogin,
     authLogout,
-    authRegister
+    authRegister,
+    authForgot
   } = actionStrings;
   switch (type) {
 //  ============== LOGIN ===============
@@ -66,6 +67,31 @@ const authReducer = (prevState = initialState, { payload, type }) => {
         err: payload.error,
       };
     case authRegister.concat("_", Fulfilled):
+      return {
+        ...prevState,
+        isLoading: false,
+        isError: false,
+        isFulfilled: true,
+      };
+//  =============== END ================
+
+//  ============== FORGOT ===============
+    case authForgot.concat("_", Pending):
+      return {
+        ...prevState,
+        isLoading: true,
+        isError: false,
+        isFulfilled: false,
+      };
+    case authForgot.concat("_", Rejected):
+      return {
+        ...prevState,
+        isLoading: false,
+        isError: true,
+        isFulfilled: false,
+        err: payload.error,
+      };
+    case authForgot.concat("_", Fulfilled):
       return {
         ...prevState,
         isLoading: false,
