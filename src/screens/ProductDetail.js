@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect,useState } from 'react'
 
 import styles from '../styles/ProductDetail'
 import IconComunity from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -14,12 +14,45 @@ import {
     Image,
     useWindowDimensions,
     ScrollView,
+    ToastAndroid
   } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
 
-function ProductDetail() {
+import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+
+function ProductDetail(props) {
     const {height, width} = useWindowDimensions();
     const navigation = useNavigation()
+    const product_id = props.route.params
+
+    const [product, setProduct] = useState()
+
+    useEffect(()=>{
+        const BaseUrl = process.env.BACKEND_URL
+        axios.get(`${BaseUrl}/products/${product_id}`).then((result)=>{
+            setProduct(result.data.data);
+        }).catch((error)=>{
+            console.log(error);
+            ToastAndroid.showWithGravityAndOffset(
+                `Something Error`,
+                ToastAndroid.SHORT,
+                ToastAndroid.TOP,
+                25,
+                50
+            );
+            navigation.goBack()
+        })
+    })
+
+    const costing = (price) => {
+        return (
+          parseFloat(price)
+            .toFixed()
+            .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")
+        );
+      };
+
+    // useEffect(()=>{console.log(product)})
   return (
     <View style={styles.container}>
         <View style={styles.navbar}>
@@ -28,15 +61,22 @@ function ProductDetail() {
         </View>
         <View style={styles.main}>
             <View style={styles.price}>
-                <Text style={styles.priceText}>30.000</Text>
+                {product?.dataPromo === 999 ? (
+                    <Text style={styles.priceText}>{costing(product?.dataProduct.price)}</Text>
+                ):
+                    <>
+                        <Text style={styles.strip}>  {costing(product?.dataProduct.price)}  </Text>
+                        <Text style={styles.priceTextDisount}>{costing((parseInt(product?.dataPromo.discount) / 100) * parseInt(product?.dataProduct.price))}</Text>
+                    </>
+                }
             </View>
             <View style={styles.top}>
-                <Image source={Sample} style={styles.product}/>
-                <Text style={styles.Title}>Cold Brew</Text>
+                <Image source={{uri: product?.dataProduct.image}} style={styles.product}/>
+                <Text style={styles.Title}>{product?.dataProduct.product_name}</Text>
             </View>
             <View style={styles.bottom}>
                 <Text style={styles.firstText}>Delivery only on <Text style={{color:'#6A4029', fontFamily: 'Poppins-Bold',}}>Monday to friday </Text> at <Text style={{color:'#6A4029', fontFamily: 'Poppins-Bold',}}>1 - 7 pm</Text></Text>
-                <Text style={styles.description}>Cold brewing is a method of brewing that combines ground coffee and cool water and uses time instead of heat to extract the flavor. It is brewed in small batches and steeped for as long as 48 hours.</Text>
+                <Text style={styles.description}>{product?.dataProduct.description}</Text>
                 <Text style={styles.sizeText}> Choose a size</Text>
                 <View style={{display: 'flex', justifyContent: 'center', flexDirection:'row'}}>
                     <View style={styles.button}>

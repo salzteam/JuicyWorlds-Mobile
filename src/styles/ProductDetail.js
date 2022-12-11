@@ -100,6 +100,22 @@ const styles = StyleSheet.create({
         fontSize: 25,
         color: 'black',
         paddingTop: 10
+    },
+    priceTextDisount:{
+        fontFamily: 'Poppins-Bold',
+        fontSize: 25,
+        color: 'black',
+        paddingTop: 15
+    },
+    strip:{
+        fontFamily: 'Poppins-SemiBold',
+        fontSize: 12,
+        color: '#D0615C',
+        // paddingTop: 10,
+        position: 'absolute',
+        top: 5,
+        textDecorationLine: 'line-through',
+        textDecorationStyle: 'solid'
     }
 })
 

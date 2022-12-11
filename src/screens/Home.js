@@ -53,16 +53,16 @@ const Home = () => {
                     keyboardShouldPersistTaps={'always'}
                     style={{height: height / 2,}}
                 >
-                    {product.Favorite?.map((data)=>{
+                    {product.Favorite?.map((datas)=>{
                         return (
                             <>
-                                <Pressable style={styles.card} onPress={()=>{navigation.navigate("ProductDetail")}}>
+                                <Pressable style={styles.card} onPress={()=>{navigation.navigate("ProductDetail", datas.id)}}>
                                     <View style={styles.containerImage}>
-                                        <Image source={{uri: data.image}} style={styles.imageCard}/>
+                                        <Image source={{uri: datas.image}} style={styles.imageCard}/>
                                     </View>
                                     <View style={styles.containerTitle}>
-                                        <Text style={styles.cardTitle}>{data.product_name}</Text>
-                                        <Text style={styles.cardPrice}>{costing(data.price)}</Text>    
+                                        <Text style={styles.cardTitle}>{datas.product_name}</Text>
+                                        <Text style={styles.cardPrice}>{costing(datas.price)}</Text>    
                                     </View>
                                 </Pressable>
                             </>
@@ -80,7 +80,7 @@ const Home = () => {
                         if (data.product_name !== "none"){
                             return (
                                 <>
-                                    <Pressable style={styles.card}>
+                                    <Pressable style={styles.card} onPress={()=>{navigation.navigate("ProductDetail", data.product_id)}}>
                                         <View style={styles.containerImage}>
                                             <Image source={{uri: data.image}} style={styles.imageCard}/>
                                         </View>
