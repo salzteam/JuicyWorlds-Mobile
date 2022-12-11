@@ -34,8 +34,8 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         flexDirection: 'row',
         // justifyContent: 'center',
-        paddingLeft: 3,
-        paddingRight: 3,
+        paddingLeft: 4,
+        paddingRight: 4,
         paddingTop: 25
     },
     card: {
@@ -62,8 +62,9 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Black',
         fontSize: 22,
         textAlign: 'center',
-        paddingTop: 80,
-        width: 116,
+        paddingTop: 90,
+        // width: 116,
+        lineHeight: 25,
         color: 'black'
     },
     priceFood: {
