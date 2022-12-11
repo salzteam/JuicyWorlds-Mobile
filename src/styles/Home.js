@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: 'black',
     textAlign: 'center',
-    width: "50%",
+    width: "80%",
     lineHeight: 22.29
   },
   cardPrice: {
