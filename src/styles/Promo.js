@@ -69,7 +69,8 @@ const styles = StyleSheet.create({
         fontSize: 22,
         textAlign: 'center',
         paddingTop: 80,
-        width: 116,
+        // width: 116,
+        lineHeight: 25,
         color: 'black'
     },
     priceFood: {
