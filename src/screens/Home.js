@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from 'react';
+import React,{useEffect} from 'react';
 
 import styles from '../styles/Home';
 import Navbar from "../components/Navbar/Navbar"
@@ -53,20 +53,22 @@ const Home = () => {
                     keyboardShouldPersistTaps={'always'}
                     style={{height: height / 2,}}
                 >
-                    {product.Favorite?.map((datas)=>{
-                        return (
-                            <>
-                                <Pressable style={styles.card} onPress={()=>{navigation.navigate("ProductDetail", datas.id)}}>
-                                    <View style={styles.containerImage}>
-                                        <Image source={{uri: datas.image}} style={styles.imageCard}/>
-                                    </View>
-                                    <View style={styles.containerTitle}>
-                                        <Text style={styles.cardTitle}>{datas.product_name}</Text>
-                                        <Text style={styles.cardPrice}>{costing(datas.price)}</Text>    
-                                    </View>
-                                </Pressable>
-                            </>
-                        )
+                    {product.Favorite?.map((datas, index)=>{
+                        if (index <= 12 && datas.price !== 0) {
+                            return (
+                                <>
+                                    <Pressable style={styles.card} onPress={()=>{navigation.navigate("ProductDetail", datas.id)}}>
+                                        <View style={styles.containerImage}>
+                                            <Image source={{uri: datas.image}} style={styles.imageCard}/>
+                                        </View>
+                                        <View style={styles.containerTitle}>
+                                            <Text style={styles.cardTitle}>{datas.product_name}</Text>
+                                            <Text style={styles.cardPrice}>{costing(datas.price)}</Text>    
+                                        </View>
+                                    </Pressable>
+                                </>
+                            )
+                        }
                     })}
                 </ScrollView>
                 <Text style={styles.category}>Promo for you</Text>
@@ -76,8 +78,8 @@ const Home = () => {
                     horizontal={true}
                     style={{height: height / 2,}}
                 >
-                    {product.Product_Promo?.map((data)=>{
-                        if (data.product_name !== "none"){
+                    {product.Product_Promo?.map((data,index)=>{
+                        if (index <= 12 && data.product_name !== "none"){
                             return (
                                 <>
                                     <Pressable style={styles.card} onPress={()=>{navigation.navigate("ProductDetail", data.product_id)}}>
