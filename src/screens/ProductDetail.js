@@ -62,11 +62,11 @@ function ProductDetail(props) {
         <View style={styles.main}>
             <View style={styles.price}>
                 {product?.dataPromo === 999 ? (
-                    <Text style={styles.priceText}>{costing(product?.dataProduct.price)}</Text>
+                    <Text style={styles.priceText}>{product ? costing(product?.dataProduct.price) : ""}</Text>
                 ):
                     <>
-                        <Text style={styles.strip}>  {costing(product?.dataProduct.price)}  </Text>
-                        <Text style={styles.priceTextDisount}>{costing((parseInt(product?.dataPromo.discount) / 100) * parseInt(product?.dataProduct.price))}</Text>
+                        <Text style={styles.strip}>  {product ?costing(product?.dataProduct.price) :""}  </Text>
+                        <Text style={styles.priceTextDisount}>{product ? costing((parseInt(product?.dataPromo.discount) / 100) * parseInt(product?.dataProduct.price)): ""}</Text>
                     </>
                 }
             </View>
