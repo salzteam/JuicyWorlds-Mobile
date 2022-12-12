@@ -13,7 +13,12 @@ import Home from './src/screens/Home';
 import ScreenFavorite from "./src/screens/Favorite"
 import ScreenPromo from "./src/screens/Promo"
 import ProductDetail from "./src/screens/ProductDetail"
-
+import Profile from "./src/screens/Profile"
+import EditProfile from "./src/screens/EditProfile"
+import History from "./src/screens/History"
+import Cart from "./src/screens/Cart"
+import Checkout from "./src/screens/Checkout"
+import Payment from "./src/screens/Payment"
 
 function App() {
   const Stack = createStackNavigator();
@@ -84,6 +89,48 @@ function App() {
         <Stack.Screen
           name="ProductDetail"
           component={ProductDetail}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="EditProfile"
+          component={EditProfile}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="History"
+          component={History}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Cart"
+          component={Cart}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Checkout"
+          component={Checkout}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Payment"
+          component={Payment}
           options={{
             headerShown: false,
           }}

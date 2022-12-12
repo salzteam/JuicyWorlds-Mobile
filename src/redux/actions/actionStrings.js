@@ -5,5 +5,8 @@ export const actionStrings = {
     authForgot: "AUTH_FORGOT_PASSWORD",
     getProfile: "GET_PROFILE_USER",
     getFavorite: "GET_PRODUCT_FAVORITE",
-    getProductPromo: "GET_PRODUCT_PROMO" 
+    getProductPromo: "GET_PRODUCT_PROMO" ,
+    addCart: "ADD_TO_CHART",
+    deleteCart: "DELETE_CHART",
+    toCheckout: "CHECKOUT_PRODUCT"
   };

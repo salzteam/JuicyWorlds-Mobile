@@ -6,26 +6,33 @@ import Sample from '../image/product.png'
 import ButtonCustom from '../components/FancyButton'
 
 import {
-    ImageBackground,
+    Pressable,
     Text,
     View,
-    TextInput,
     TouchableOpacity,
     Image,
     useWindowDimensions,
-    ScrollView,
-    ToastAndroid
+    ToastAndroid,
+    Modal
   } from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
+import cartAction from '../redux/actions/transaction'
+import { ScrollView } from 'react-native-gesture-handler';
 
 function ProductDetail(props) {
     const {height, width} = useWindowDimensions();
     const navigation = useNavigation()
     const product_id = props.route.params
 
+    const [modalVisible, setModalVisible] = useState(false);
     const [product, setProduct] = useState()
+    const [size, setSize] = useState("1")
+
+    const dispatch = useDispatch();
+    const cartState = useSelector(state => state.transaction);
 
     useEffect(()=>{
         const BaseUrl = process.env.BACKEND_URL
@@ -44,6 +51,35 @@ function ProductDetail(props) {
         })
     })
 
+    const CartHandler = () => {
+        if (!size){
+            return ToastAndroid.showWithGravityAndOffset(
+                `Please Select a size`,
+                ToastAndroid.SHORT,
+                ToastAndroid.TOP,
+                25,
+                50
+            );
+        }
+        if (!modalVisible && cartState.cart.length !== 0) return setModalVisible(true);
+        const data = {
+            "id" : product?.dataProduct.id,
+            "name_product" : product?.dataProduct.product_name,
+            "price": product?.dataPromo === 999 ? product.dataProduct.price : (parseInt(product?.dataPromo.discount) / 100) * parseInt(product?.dataProduct.price),
+            "image": product?.dataProduct.image,
+            "promo": product?.dataPromo === 999 ? product.dataPromo : product.dataPromo.id,
+            "size": size,
+        }
+        dispatch(cartAction.addCartFulfilled(data))
+        return ToastAndroid.showWithGravityAndOffset(
+            `Added Product To Cart`,
+            ToastAndroid.SHORT,
+            ToastAndroid.TOP,
+            25,
+            50
+        );
+    }
+
     const costing = (price) => {
         return (
           parseFloat(price)
@@ -54,10 +90,13 @@ function ProductDetail(props) {
 
     // useEffect(()=>{console.log(product)})
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
         <View style={styles.navbar}>
             <IconComunity name='chevron-left' size={22} style={styles.icon} onPress={()=>{navigation.goBack()}}/>
-            <IconComunity name='cart-outline' size={22} style={styles.icon}/>
+            <IconComunity name='cart-outline' size={22} style={styles.icon} onPress={()=>{navigation.navigate("Cart")}}/>
+            {cartState.cart.length !== 0 && (<View style={styles.notif}>
+                <Text style={styles.textNotif}>1</Text>
+            </View>)}
         </View>
         <View style={styles.main}>
             <View style={styles.price}>
@@ -79,19 +118,20 @@ function ProductDetail(props) {
                 <Text style={styles.description}>{product?.dataProduct.description}</Text>
                 <Text style={styles.sizeText}> Choose a size</Text>
                 <View style={{display: 'flex', justifyContent: 'center', flexDirection:'row'}}>
-                    <View style={styles.button}>
-                        <Text style={styles.buttonText}>R</Text>
-                    </View>
-                    <View style={styles.button}>
-                        <Text style={styles.buttonText}>L</Text>
-                    </View>
-                    <View style={styles.button}>
-                        <Text style={styles.buttonText}>XL</Text>
-                    </View>
+                    <Pressable style={size === "1" ? styles.selected : styles.button} onPress={()=>{setSize("1")}}>
+                        <Text style={size === "1"? styles.selectedText : styles.buttonText}>R</Text>
+                    </Pressable>
+                    <Pressable style={size === "2" ? styles.selected : styles.button} onPress={()=>{setSize("2")}}>
+                        <Text style={size === "2"? styles.selectedText : styles.buttonText}>L</Text>
+                    </Pressable>
+                    <Pressable style={size === "3" ? styles.selected : styles.button} onPress={()=>{setSize("3")}}>
+                        <Text style={size === "3"? styles.selectedText : styles.buttonText}>XL</Text>
+                    </Pressable>
                 </View>
                 <View style={{width: width, paddingBottom: 30}}>
                     {/* <ButtonCustom text={"Add to cart"} textColor={"white"} color={"#6A4029"}/> */}
                     <TouchableOpacity
+                        onPress={CartHandler}
                         activeOpacity={0.8}>
                         <View
                             style={{
@@ -106,9 +146,46 @@ function ProductDetail(props) {
                         </View>
                     </TouchableOpacity>
                 </View>
+                <Modal
+                    visible={modalVisible}
+                    transparent={true}
+                    onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                    }}
+                >
+                    <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>Cart already has one product, are you sure you want to change it?</Text>
+                        <View style={{display: 'flex', flexDirection: 'row'}}>
+                        <Pressable
+                            style={[styles.buttonModal, styles.buttonClose]}
+                            onPress={() => setModalVisible(!modalVisible)}
+                        >
+                            <Text style={styles.textStyle}>Cancel</Text>
+                        </Pressable>
+                        <Pressable
+                            onPress={()=>{
+                                CartHandler()
+                                setModalVisible(false)
+                                return ToastAndroid.showWithGravityAndOffset(
+                                    `Added Product To Cart`,
+                                    ToastAndroid.SHORT,
+                                    ToastAndroid.TOP,
+                                    25,
+                                    50
+                                );
+                            }}
+                            style={[styles.buttonModal, styles.buttonClose]}
+                        >
+                            <Text style={styles.textStyle}>Continue</Text>
+                        </Pressable>
+                        </View>
+                    </View>
+                    </View>
+                </Modal>
             </View>
         </View>
-    </View>
+    </ScrollView>
   )
 }
 
