@@ -7,7 +7,7 @@ import {
     Text,
     TouchableOpacity,
     ToastAndroid,
-    useWindowDimensions,
+    ActivityIndicator,
     Pressable,
     Linking
   } from 'react-native'; 
@@ -183,7 +183,7 @@ function Payment() {
                             flexDirection: 'row',
                             alignContent: 'center'
                         }}>
-                        <Text style={{color: "white", fontFamily: 'Poppins-Bold', fontSize: 16, paddingLeft: 35}}>Proceed payment</Text>
+                        {isLoading?<ActivityIndicator size='large' color='white' /> : <Text style={{color: "white", fontFamily: 'Poppins-Bold', fontSize: 16, paddingLeft: 35}}>Proceed payment</Text>}
                     </View>
                 </TouchableOpacity>
             </View>

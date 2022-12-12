@@ -1,4 +1,5 @@
 import { ActionType } from "redux-promise-middleware";
+import { history } from "../../utils/transaction";
 import { actionStrings } from "./actionStrings";
 
 const { Pending, Rejected, Fulfilled } = ActionType;
@@ -17,10 +18,38 @@ const checkoutFulfilled = (data) => ({
     payload: { data }
 })
 
-const userAction = {
+// =================== GET HISTORY ==================
+const getHistoryPending = () => ({
+    type: actionStrings.getHistory.concat("_", Pending),
+  });
+  const getHistoryRejected = (error) => ({
+    type: actionStrings.getHistory.concat("_", Rejected),
+    payload: { error },
+  });
+  const getHistoryFulfilled = (data) => ({
+    type: actionStrings.getHistory.concat("_", Fulfilled),
+    payload: { data },
+  });
+  // ========================= END ==========================
+
+const getHistoryThunk = (paginasi,token) => {
+    return async dispatch => {
+      try {
+        dispatch(getHistoryPending())
+        const result = await history(paginasi,token)
+        dispatch(getHistoryFulfilled(result.data.data.data))
+      } catch (error) {
+        dispatch(getHistoryRejected(error.response.data.message || error.response.data.msg));
+        console.log(error);
+      }
+    }
+  }
+
+const transactionAction = {
     addCartFulfilled,
     deleteCartFulfilled,
-    checkoutFulfilled
+    checkoutFulfilled,
+    getHistoryThunk
 };
 
-export default userAction;
+export default transactionAction;

@@ -40,6 +40,7 @@ function Navbar({children}) {
   const profile = useSelector(state => state.profile.profile);
   const email = useSelector(state => state.auth.userData.email);
   const auth = useSelector(state => state.auth);
+  const cartState = useSelector(state => state.transaction);
 
   const logoutHandler = () => {
     const LogoutSuccess = () => {
@@ -60,24 +61,24 @@ function Navbar({children}) {
   const renderDrawer = () => {
     return (
       <View>
-        <View style={styles.continerSwipe}>
+        <Pressable style={styles.continerSwipe} onPress={()=>{navigation.navigate("Profile")}}>
           <Image source={{uri:profile.image}} style={styles.imageDrawer}/>
           <Text style={styles.username}>{profile.displayName}</Text>
           <Text style={styles.email}>{email}</Text>
-        </View>
+        </Pressable>
         <View style={{paddingLeft: 35, paddingRight: 35,paddingTop: 20, display: 'flex', flexDirection: 'column', justifyContent:'space-between'}}>
           <View>
-            <View style={styles.containerBottom}>
+            <Pressable style={styles.containerBottom} onPress={()=>{navigation.navigate("EditProfile")}}>
               {/* <Image source={IconUser} style={styles.imageBottom}/> */}
               <Icons name={"user-circle"} size={20} style={styles.imageBottom}/>
               <Text style={styles.textBottom}>Edit Profile</Text>
-            </View>
+            </Pressable>
             <Divider style={{width:"90%",margin:3 }}/>
-            <View style={styles.containerBottom}>
+            <Pressable style={styles.containerBottom} onPress={()=>{navigation.navigate("History")}}>
               {/* <Image source={IconUser} style={styles.imageBottom}/> */}
               <IconComunity name={"cart-arrow-down"} size={20} style={styles.imageBottom}/>
               <Text style={styles.textBottom}>Orders</Text>
-            </View>
+            </Pressable>
             <Divider style={{width:"90%",margin:3 }}/>
             <View style={styles.containerBottom}>
               {/* <Image source={IconMenus} style={styles.imageBottom}/> */}
@@ -153,7 +154,10 @@ function Navbar({children}) {
                   {/* <Image source={Search} style={styles.icon}/> */}
                   <Icons name={"rocketchat"} style={{transform: [{rotateY: '180deg'}], fontSize: 25,marginHorizontal: 7}}/>
                   <IconIon name={"search-outline"} style={styles.Icons}/>
-                  <IconIon name={"cart-outline"} style={styles.Icons}/>
+                  <IconIon name={"cart-outline"} style={styles.Icons} onPress={()=>{navigation.navigate("Cart")}}/>
+                  {cartState.cart.length !== 0 && (<View style={styles.notif}>
+                      <Text style={styles.textNotif}>1</Text>
+                  </View>)}
                   {/* <Image source={Chart} style={styles.icon}/> */}
                   {/* <Icons name={"search"} size={20} style={styles.icon}/>
                   <Icons name={"shopping-cart"} size={20} style={styles.icon}/> */}

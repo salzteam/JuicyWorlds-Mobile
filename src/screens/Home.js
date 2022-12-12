@@ -9,11 +9,8 @@ import {
   Text,
   View,
   Pressable ,
-  TextInput,
-  TouchableOpacity,
   ScrollView,
   useWindowDimensions,
-  LinearLayout
 } from 'react-native';
 
 import {useNavigation} from '@react-navigation/native'
@@ -57,7 +54,7 @@ const Home = () => {
                         if (index <= 12 && datas.price !== 0) {
                             return (
                                 <>
-                                    <Pressable style={styles.card} onPress={()=>{navigation.navigate("ProductDetail", datas.id)}}>
+                                    <Pressable style={styles.card} key={datas.id} onPress={()=>{navigation.navigate("ProductDetail", datas.id)}}>
                                         <View style={styles.containerImage}>
                                             <Image source={{uri: datas.image}} style={styles.imageCard}/>
                                         </View>
@@ -82,7 +79,7 @@ const Home = () => {
                         if (index <= 12 && data.product_name !== "none"){
                             return (
                                 <>
-                                    <Pressable style={styles.card} onPress={()=>{navigation.navigate("ProductDetail", data.product_id)}}>
+                                    <Pressable key={data.id} style={styles.card} onPress={()=>{navigation.navigate("ProductDetail", data.product_id)}}>
                                         <View style={styles.containerImage}>
                                             <Image source={{uri: data.image}} style={styles.imageCard}/>
                                         </View>

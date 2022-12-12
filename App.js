@@ -19,6 +19,7 @@ import History from "./src/screens/History"
 import Cart from "./src/screens/Cart"
 import Checkout from "./src/screens/Checkout"
 import Payment from "./src/screens/Payment"
+import Splashscreen from "./src/screens/Splashscreen"
 
 function App() {
   const Stack = createStackNavigator();
@@ -30,7 +31,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Started"
+        initialRouteName="Splashscreen"
       >
         <Stack.Screen
           name="Started"
@@ -131,6 +132,13 @@ function App() {
         <Stack.Screen
           name="Payment"
           component={Payment}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Splashscreen"
+          component={Splashscreen}
           options={{
             headerShown: false,
           }}

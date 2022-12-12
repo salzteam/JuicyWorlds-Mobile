@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 
 import styles from '../styles/EditProfile';
 import IconComunity from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -17,6 +17,7 @@ import {
   } from 'react-native'; 
 
 import {useNavigation} from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 
 function EditProfile() {
     const [checked, setChecked] = useState('female');
@@ -24,7 +25,16 @@ function EditProfile() {
     const [open, setOpen] = useState(false)
     const [file, setFile] = useState()
     const [displayDate, setDisplay] = useState("December 21th 1998")
+
     const navigation = useNavigation();
+    const profile = useSelector(state => state.profile.profile);
+    const auth = useSelector(state => state.auth.userData);
+
+  useEffect(()=>{
+    if (profile.gender === "male") setChecked("male")
+    if (profile.gender === "female") setChecked("female")
+    setDisplay(profile.born)
+  },[profile])
 
     const selectFiles = () => {
         var options = {
@@ -83,14 +93,14 @@ function EditProfile() {
             <Text style={styles.titleNavbar}>Edit profile</Text>
         </View>
         <View style={styles.userinfo}>
-            <Image source={file ? {uri: file[0].uri} : User} style={styles.image}/>
+            <Image source={file ? {uri: file[0].uri} : {uri: profile.image}} style={styles.image}/>
             <Pressable style={styles.conPencl} onPress={launchImageLibrarys}>
                 <IconComunity name={"pencil"} style={styles.pencil}size={20}/>
             </Pressable>
         </View>
         <View style={styles.containerInput}>
             <Text style={styles.label}>Name :</Text>
-            <TextInput placeholder='Zulaikha17' style={styles.input}/>
+            <TextInput placeholder={profile.displayName} style={styles.input}/>
         </View>
         <View style={styles.containerRadio}>
             <View style={styles.radio}>
@@ -110,17 +120,17 @@ function EditProfile() {
         </View>
         <View style={{marginBottom: 15}}>
             <Text style={styles.label}>Email Adress :</Text>
-            <TextInput placeholder='salzteam@gmail.com' style={styles.input}/>
+            <TextInput placeholder={auth.email} style={styles.input}/>
         </View>
         <View style={{marginBottom: 15}}>
             <Text style={styles.label}>Phone Number :</Text>
-            <TextInput placeholder='+62 81348287878' style={styles.input}/>
+            <TextInput placeholder={profile.noTelp} style={styles.input}/>
         </View>
         <Pressable style={{marginBottom: 15}}>
             <Text style={styles.label}>Date of Birth :</Text>
             <Pressable style={styles.input}> 
                 <View style={{justifyContent: 'space-between', display: 'flex', flexDirection: 'row'}}>
-                    <Text style={{marginVertical: 10}}>{displayDate}</Text>
+                    <Text style={displayDate === profile.born ? styles.berubah : styles.tanggal}>{displayDate}</Text>
                     <IconComunity name={"calendar-range"} style={{paddingTop: 15}} size={20} onPress={()=>{setOpen(true)}}/>
                 </View>
             </Pressable>
@@ -145,7 +155,7 @@ function EditProfile() {
         </Pressable>
         <View style={{marginBottom: 15}}>
             <Text style={styles.label}>Delivery Adress :</Text>
-            <TextInput placeholder='Iskandar Street Block A Number 102' style={styles.input}/>
+            <TextInput placeholder={profile.adress} style={styles.input}/>
         </View>
         <TouchableOpacity
             activeOpacity={0.8}>

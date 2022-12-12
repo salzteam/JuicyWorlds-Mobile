@@ -111,6 +111,22 @@ const styles = StyleSheet.create({
     fontSize: 25,
     marginBottom: 15,
     textAlign: "center"
+  },
+  notif:{
+    position: 'absolute',
+    width:12,
+    height: 12,
+    backgroundColor: 'black',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 100,
+    right: 0,
+    top: 0
+  },
+  textNotif:{
+    fontFamily: 'Poppins-Bold',
+    fontSize: 8,
+    color: 'white'
   }
 });
 

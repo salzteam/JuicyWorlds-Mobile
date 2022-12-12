@@ -8,5 +8,6 @@ export const actionStrings = {
     getProductPromo: "GET_PRODUCT_PROMO" ,
     addCart: "ADD_TO_CHART",
     deleteCart: "DELETE_CHART",
-    toCheckout: "CHECKOUT_PRODUCT"
+    toCheckout: "CHECKOUT_PRODUCT",
+    getHistory: "GET_HISTORY",
   };

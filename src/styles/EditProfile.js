@@ -118,6 +118,13 @@ const styles = StyleSheet.create({
         color: '#9F9F9F',
         marginLeft: 15,
         paddingTop: 3.5
+    },
+    tanggal: {
+        marginVertical: 10,
+        color: 'black'
+    },
+    berubah:{
+        marginVertical: 10
     }
 })
 

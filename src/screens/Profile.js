@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 
 import styles from '../styles/Profile';
 import IconComunity from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -13,66 +13,79 @@ import {
     ScrollView,
     Text,
     Pressable,
-  } from 'react-native'; 
+} from 'react-native';
+
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import historyAction from '../redux/actions/transaction';
 
 function Profile() {
-  return (
-    <ScrollView style={styles.container}>
-        <View style={styles.navbar}>
-            <IconComunity name={"chevron-left"} size={20} style={styles.icons} onPress={()=>{navigation.goBack()}}/>
-            <Text style={styles.titleNavbar}>My profile</Text>
-        </View>
-        <View style={styles.userinfo}>
-            <Image source={User} style={styles.image}/>
-            <Text style={styles.username}>SalzTeam</Text>
-            <Pressable style={styles.conPencl}>
-                <IconComunity name={"pencil"} style={styles.pencil}size={20} onPress={()=>{navigation.goBack()}}/>
-            </Pressable>
-            <Text style={styles.descritption}>salzteam@gmail.com</Text>
-            <Text style={styles.descritption}>082279014545</Text>
-            <Text style={styles.descritption}>Iskandar Street Block A Number 102</Text>
-        </View>
-        <Divider width={8} style={{width:"100%",marginTop:15 }}/>
-        <View style={{flexDirection: 'column', paddingTop: 20}}>
-            <View style={{flexDirection: 'row',justifyContent: 'space-between',  alignItems: 'center', paddingRight: 20, paddingLeft: 20}}>
-                <Text style={styles.history}>Order History</Text>
-                <Text style={styles.seemore}>See more</Text>
+
+    const navigation = useNavigation()
+    const profile = useSelector(state => state.profile.profile);
+    const auth = useSelector(state => state.auth.userData);
+    const transaction = useSelector(state => state.transaction);
+    const dispatch = useDispatch();
+
+    useEffect(()=>{
+        if (transaction.history.length === 0){
+            dispatch(historyAction.getHistoryThunk("page=1&limit=6",auth.token))
+        }
+    },[dispatch])
+    return (
+        <ScrollView style={styles.container}>
+            <View style={styles.navbar}>
+                <IconComunity name={"chevron-left"} size={20} style={styles.icons} onPress={() => { navigation.goBack() }} />
+                <Text style={styles.titleNavbar}>My profile</Text>
             </View>
-            <View style={{paddingRight: 0}}>
-                <ScrollView style={styles.slider} horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <Image source={Sample} style={styles.imageHistory}/>
-                    <Image source={Sample} style={styles.imageHistory}/>
-                    <Image source={Sample} style={styles.imageHistory}/>
-                    <Image source={Sample} style={styles.imageHistory}/>
-                    <Image source={Sample} style={styles.imageHistory}/>
-                    <Image source={Sample} style={styles.imageHistory}/>
-                </ScrollView>
+            <View style={styles.userinfo}>
+                <Image source={{uri: profile.image}} style={styles.image} />
+                <Text style={styles.username}>{profile.displayName}</Text>
+                <Pressable style={styles.conPencl}>
+                    <IconComunity name={"pencil"} style={styles.pencil} size={20} onPress={() => { navigation.goBack() }} />
+                </Pressable>
+                <Text style={styles.descritption}>{auth.email}</Text>
+                <Text style={styles.descritption}>{profile.noTelp}</Text>
+                <Text style={styles.descritption}>{profile.adress}</Text>
             </View>
-        </View>
-        <Divider width={8} style={{width:"100%",marginTop:15 }}/>
-        <View style={styles.containerNavigation}>
-            <Pressable style={styles.button}>
-                <Text style={styles.textButton}>Edit Password</Text>
-                <IconComunity name={"chevron-right"} size={20} style={styles.arrowButton}/>
-            </Pressable>
-        </View>
-        <View style={styles.containerNavigation}>
-            <Pressable style={styles.button}>
-                <Text style={styles.textButton}>FAQ</Text>
-                <IconComunity name={"chevron-right"} size={20} style={styles.arrowButton}/>
-            </Pressable>
-        </View>
-        <View style={styles.containerNavigation}>
-            <Pressable style={styles.button}>
-                <Text style={styles.textButton}>Help</Text>
-                <IconComunity name={"chevron-right"} size={20} style={styles.arrowButton}/>
-            </Pressable>
-        </View>
-        <View style={{paddingLeft: 20, paddingRight: 20, paddingTop: 30, paddingBottom: 30}}>
-            <ButtonCustom text={"Save"} textColor={"white"} color={"#6A4029"}/>
-        </View>
-    </ScrollView>
-  )
+            <Divider width={8} style={{ width: "100%", marginTop: 15 }} />
+            <View style={{ flexDirection: 'column', paddingTop: 20 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingRight: 20, paddingLeft: 20 }}>
+                    <Text style={styles.history}>Order History</Text>
+                    <Text style={styles.seemore}>See more</Text>
+                </View>
+                <View style={{ paddingRight: 0 }}>
+                    <ScrollView style={styles.slider} horizontal={true} showsHorizontalScrollIndicator={false}>
+                        {transaction.history.length !== 0 && transaction.history.map((data)=>{
+                            return <Image source={{uri: data.image}} style={styles.imageHistory} />
+                        })}
+                    </ScrollView>
+                </View>
+            </View>
+            <Divider width={8} style={{ width: "100%", marginTop: 15 }} />
+            <View style={styles.containerNavigation}>
+                <Pressable style={styles.button}>
+                    <Text style={styles.textButton}>Edit Password</Text>
+                    <IconComunity name={"chevron-right"} size={20} style={styles.arrowButton} />
+                </Pressable>
+            </View>
+            <View style={styles.containerNavigation}>
+                <Pressable style={styles.button}>
+                    <Text style={styles.textButton}>FAQ</Text>
+                    <IconComunity name={"chevron-right"} size={20} style={styles.arrowButton} />
+                </Pressable>
+            </View>
+            <View style={styles.containerNavigation}>
+                <Pressable style={styles.button}>
+                    <Text style={styles.textButton}>Help</Text>
+                    <IconComunity name={"chevron-right"} size={20} style={styles.arrowButton} />
+                </Pressable>
+            </View>
+            <View style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 30, paddingBottom: 30 }}>
+                <ButtonCustom text={"Save"} textColor={"white"} color={"#6A4029"} />
+            </View>
+        </ScrollView>
+    )
 }
 
 export default Profile

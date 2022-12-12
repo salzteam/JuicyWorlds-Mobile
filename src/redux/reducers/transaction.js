@@ -3,6 +3,7 @@ import { actionStrings } from "../actions/actionStrings";
 
 const initialState = {
   cart: [],
+  history: [],
   isLoading: false,
   isError: false,
   isFulfilled: false,
@@ -12,12 +13,42 @@ const initialState = {
 
 const transactionReducer = (prevState = initialState, { payload, type }) => {
   const { Pending, Rejected, Fulfilled } = ActionType;
-  const {addCart,deleteCart,authLogout, toCheckout} = actionStrings;
+  const {addCart,deleteCart,authLogout, toCheckout, getHistory} = actionStrings;
   switch (type) {
+    // =============== GET HISTORY ================ 
+    case getHistory.concat("_", Pending):
+    return {
+        ...prevState,
+        isLoading: true,
+        isError: false,
+        isFulfilled: false,
+        err: null,
+    };
+    case getHistory.concat("_", Rejected):
+    return {
+        ...prevState,
+        isLoading: false,
+        isError: true,
+        isFulfilled: false,
+        err: payload.data,
+    };
+    case getHistory.concat("_", Fulfilled):
+    return {
+        ...prevState,
+        history: payload.data,
+        isLoading: false,
+        isError: false,
+        isFulfilled: true,
+        err: null,
+        confirms: false,
+    };
+// ================= END ================
+
     // =============== LOGOUT ================ 
     case authLogout.concat("_", Fulfilled):
     return {
         cart: [],
+        history: [],
         isLoading: false,
         isError: false,
         isFulfilled: false,
