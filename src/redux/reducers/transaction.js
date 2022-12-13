@@ -4,6 +4,7 @@ import { actionStrings } from "../actions/actionStrings";
 const initialState = {
   cart: [],
   history: [],
+  nextHistory: "",
   isLoading: false,
   isError: false,
   isFulfilled: false,
@@ -30,12 +31,13 @@ const transactionReducer = (prevState = initialState, { payload, type }) => {
         isLoading: false,
         isError: true,
         isFulfilled: false,
-        err: payload.data,
+        err: payload.error,
     };
     case getHistory.concat("_", Fulfilled):
     return {
         ...prevState,
-        history: payload.data,
+        history: payload.data.data,
+        nextHistory: payload.data.next,
         isLoading: false,
         isError: false,
         isFulfilled: true,
@@ -49,6 +51,7 @@ const transactionReducer = (prevState = initialState, { payload, type }) => {
     return {
         cart: [],
         history: [],
+        nextHistory: "",
         isLoading: false,
         isError: false,
         isFulfilled: false,

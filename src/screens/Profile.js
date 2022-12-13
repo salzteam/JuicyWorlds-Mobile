@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import React,{useEffect, useState} from 'react';
 
 import styles from '../styles/Profile';
 import IconComunity from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -13,6 +13,7 @@ import {
     ScrollView,
     Text,
     Pressable,
+    ActivityIndicator
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
@@ -26,6 +27,8 @@ function Profile() {
     const auth = useSelector(state => state.auth.userData);
     const transaction = useSelector(state => state.transaction);
     const dispatch = useDispatch();
+    const [isLoading, setLoading] = useState(false)
+    const [isError, setError] = useState(true)
 
     useEffect(()=>{
         if (transaction.history.length === 0){
@@ -54,6 +57,16 @@ function Profile() {
                     <Text style={styles.history}>Order History</Text>
                     <Text style={styles.seemore} onPress={()=>{navigation.navigate("History")}}>See more</Text>
                 </View>
+                    {transaction.isLoading && (
+                        <View style={{paddingTop: 30, paddingBottom: 20}}>
+                            <ActivityIndicator size='large' color='black' />
+                        </View>
+                    )}
+                    {transaction.err === "data_not_found" && (
+                        <View style={{paddingTop: 30, paddingBottom: 20, justifyContent:'center', alignItems: 'center'}}>
+                            <Text style={{fontFamily: 'Poppins-Bold'}}>Nothing Transactions Here</Text>
+                        </View>
+                    )}
                 <View style={{ paddingRight: 0 }}>
                     <ScrollView style={styles.slider} horizontal={true} showsHorizontalScrollIndicator={false}>
                         {transaction.history.length !== 0 && transaction.history.map((data)=>{

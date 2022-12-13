@@ -32,12 +32,13 @@ const getHistoryPending = () => ({
   });
   // ========================= END ==========================
 
-const getHistoryThunk = (paginasi,token) => {
+const getHistoryThunk = (paginasi,token, cbConcat) => {
     return async dispatch => {
       try {
         dispatch(getHistoryPending())
         const result = await history(paginasi,token)
-        dispatch(getHistoryFulfilled(result.data.data.data))
+        dispatch(getHistoryFulfilled(result.data.data))
+        typeof cbConcat === "function" && cbConcat(result.data.data.data)
       } catch (error) {
         dispatch(getHistoryRejected(error.response.data.message || error.response.data.msg));
         console.log(error);
