@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   sectionContainer: {
-    flex: 1,
+    flex: 1
   },
   image: {
     flex: 1,

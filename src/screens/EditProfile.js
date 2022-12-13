@@ -14,27 +14,81 @@ import {
     Pressable,
     TextInput,
     TouchableOpacity,
+    ToastAndroid ,
+    ActivityIndicator
   } from 'react-native'; 
 
 import {useNavigation} from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
+import userAction from '../redux/actions/user';
 
 function EditProfile() {
     const [checked, setChecked] = useState('female');
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
     const [file, setFile] = useState()
-    const [displayDate, setDisplay] = useState("December 21th 1998")
+    const [displayDate, setDisplay] = useState()
+    const [body,setBody] = useState()
+    const [allow, setAllow] = useState(false)
 
+    const dispatch = useDispatch();
     const navigation = useNavigation();
     const profile = useSelector(state => state.profile.profile);
+    const isLoading = useSelector(state => state.profile.isLoading);
     const auth = useSelector(state => state.auth.userData);
+
+    const changeHandler = (text,name) => {
+      setBody(body => ({ ...body, [name]: text }));
+    }
+
+    useEffect(()=>{
+      setAllow(false)
+      if (body || file || displayDate !== profile.born || checked !== profile.gender) setAllow(true)
+    }, [body,file,displayDate,checked])
 
   useEffect(()=>{
     if (profile.gender === "male") setChecked("male")
     if (profile.gender === "female") setChecked("female")
     setDisplay(profile.born)
+    setFile()
   },[profile])
+
+  const saveHandler = () => {
+    if (!allow) return
+    const Success = () => {
+        ToastAndroid.showWithGravityAndOffset(
+            `Data changed successfully`,
+            ToastAndroid.SHORT,
+            ToastAndroid.TOP,
+            25,
+            50
+        )
+    }
+    const Error = (error) => {
+        ToastAndroid.showWithGravityAndOffset(
+            `${error}`,
+            ToastAndroid.SHORT,
+            ToastAndroid.TOP,
+            25,
+            50
+        );
+    }
+    let bodys = new FormData();
+    if (file) bodys.append("image",  {
+      name: 'test.' + file[0]?.type?.substr(6),
+      type: file[0]?.type,
+      uri:
+        Platform.OS !== 'android'
+          ? 'file://' + file[0]?.uri
+          : file[0]?.uri,
+    });
+    if (body?.display_name) bodys.append("display_name", body.display_name);
+    if (body?.display_name) bodys.append("display_name", body.display_name);
+    if (body?.adress) bodys.append("adress", body.adress);
+    if (displayDate !== profile.born) bodys.append("date_of_birth", displayDate);
+    if (checked !== profile.gender) bodys.append("gender", checked);
+    dispatch(userAction.editProfileThunk(bodys, auth.token,Success,Error))
+  }
 
     const selectFiles = () => {
         var options = {
@@ -100,7 +154,7 @@ function EditProfile() {
         </View>
         <View style={styles.containerInput}>
             <Text style={styles.label}>Name :</Text>
-            <TextInput placeholder={profile.displayName} style={styles.input}/>
+            <TextInput placeholder={profile.displayName} style={styles.input} onChangeText={text =>changeHandler(text, "display_name")}/>
         </View>
         <View style={styles.containerRadio}>
             <View style={styles.radio}>
@@ -108,23 +162,23 @@ function EditProfile() {
                     <View style={checked === "female" ? styles.checkedInner : styles.unchekedInner}>
                     </View>
                 </Pressable>
-                <Text style={styles.checkedText}>Female</Text>
+                <Text style={checked === "female" ? styles.checkedText :styles.uncheckedText }>Female</Text>
             </View>
             <View style={styles.radio}>
                 <Pressable style={checked === "male" ? styles.checkedOuter : styles.unchekedOuter} onPress={()=>setChecked("male")}>
                     <View style={checked === "male" ? styles.checkedInner : styles.unchekedInner}>
                     </View>
                 </Pressable>
-                <Text style={styles.uncheckedText}>Male</Text>
+                <Text style={checked === "male" ? styles.checkedText :styles.uncheckedText }>Male</Text>
             </View>
         </View>
         <View style={{marginBottom: 15}}>
             <Text style={styles.label}>Email Adress :</Text>
-            <TextInput placeholder={auth.email} style={styles.input}/>
+            <TextInput placeholder={auth.email} style={styles.input} placeholderTextColor='black' editable={false} selectTextOnFocus={false}/>
         </View>
         <View style={{marginBottom: 15}}>
             <Text style={styles.label}>Phone Number :</Text>
-            <TextInput placeholder={profile.noTelp} style={styles.input}/>
+            <TextInput placeholder={profile.noTelp} style={styles.input} placeholderTextColor='black' editable={false} selectTextOnFocus={false}/>
         </View>
         <Pressable style={{marginBottom: 15}}>
             <Text style={styles.label}>Date of Birth :</Text>
@@ -155,15 +209,16 @@ function EditProfile() {
         </Pressable>
         <View style={{marginBottom: 15}}>
             <Text style={styles.label}>Delivery Adress :</Text>
-            <TextInput placeholder={profile.adress} style={styles.input}/>
+            <TextInput placeholder={profile.adress} style={styles.input} onChangeText={text =>changeHandler(text, "adress")}/>
         </View>
         <TouchableOpacity
-            activeOpacity={0.8}>
+            activeOpacity={0.8}
+            onPress={saveHandler}>
             <View
                 style={{
                 marginTop: 10,
                 marginBottom: 55,
-                backgroundColor: "#6A4029",
+                backgroundColor: allow ? "#6A4029" : "#9F9F9F",
                 height: 70,
                 borderRadius: 20,
                 justifyContent: 'center',
@@ -172,7 +227,7 @@ function EditProfile() {
                 flexDirection: 'row',
                 alignContent: 'center'
                 }}>
-                <Text style={{color: "white", fontFamily: 'Poppins-Black', fontSize: 17}}>Save and Update</Text>
+                {isLoading?<ActivityIndicator size='large' color='white' /> :<Text style={{color: "white", fontFamily: 'Poppins-Black', fontSize: 17}}>Save and Update</Text>}
             </View>
         </TouchableOpacity>
     </ScrollView>

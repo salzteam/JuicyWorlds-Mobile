@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
         color: 'black',
         marginBottom: 5,
         marginVertical: 5,
-        width: 220
+        // width: 220
     },
     total:{
         fontWeight: 'Poppins-Regular',

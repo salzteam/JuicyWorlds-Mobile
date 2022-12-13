@@ -34,8 +34,8 @@ function Payment() {
 
     const size = () => {
         let size = "Reguler"
-        if (cartState.size = "2") size = "Large";
-        if (cartState.size = "3") size = "XL";
+        if (cartState && cartState.size === "2") size = "Large";
+        if (cartState && cartState.size === "3") size = "XL";
         return size
     }
 
@@ -107,15 +107,15 @@ function Payment() {
             <View style={styles.Containercard}>
                 <View style={styles.card}>
                     <View>
-                        <Image source={{uri: cartState.image}} style={styles.imageCard}/>
+                        <Image source={{uri: cartState?.image}} style={styles.imageCard}/>
                     </View>
                     <View style={{marginHorizontal: 15, minWidth:100, maxWidth: 80}}>
-                        <Text style={styles.Title}>{cartState.name_product}</Text>
-                        <Text style={styles.Title}>x {cartState.qty}</Text>
+                        <Text style={styles.Title}>{cartState?.name_product}</Text>
+                        <Text style={styles.Title}>x {cartState?.qty}</Text>
                         <Text style={styles.Title}>{size()}</Text>
                     </View>
                     <View style={{marginHorizontal: 5}}>
-                        <Text style={styles.price}>IDR {costing(cartState.price)}</Text>
+                        <Text style={styles.price}>IDR {costing(cartState?.price)}</Text>
                     </View>
                 </View>
             </View>
@@ -163,7 +163,7 @@ function Payment() {
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingTop: 10, paddingBottom: 20, alignItems: 'center'}}>
                 <Text style={styles.totals}>Total</Text>
-                <Text style={styles.prices}>IDR {costing(cartState.subTotal)}</Text>
+                <Text style={styles.prices}>IDR {costing(cartState?.subTotal)}</Text>
             </View>
             <View style={{paddingBottom: 30}}>
                 <TouchableOpacity
@@ -177,13 +177,14 @@ function Payment() {
                             backgroundColor: "#6A4029",
                             height: 70,
                             borderRadius: 20,
-                            paddingLeft: 30,
+                            // paddingLeft: 30,
                             alignItems: 'center',
                             display: 'flex',
                             flexDirection: 'row',
-                            alignContent: 'center'
+                            alignContent: 'center',
+                            justifyContent: 'center'
                         }}>
-                        {isLoading?<ActivityIndicator size='large' color='white' /> : <Text style={{color: "white", fontFamily: 'Poppins-Bold', fontSize: 16, paddingLeft: 35}}>Proceed payment</Text>}
+                        {isLoading?<ActivityIndicator size='large' color='white' style={{}}/> : <Text style={{color: "white", fontFamily: 'Poppins-Bold', fontSize: 16}}>Proceed payment</Text>}
                     </View>
                 </TouchableOpacity>
             </View>

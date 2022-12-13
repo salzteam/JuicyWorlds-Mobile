@@ -41,9 +41,9 @@ function Profile() {
             <View style={styles.userinfo}>
                 <Image source={{uri: profile.image}} style={styles.image} />
                 <Text style={styles.username}>{profile.displayName}</Text>
-                <Pressable style={styles.conPencl}>
+                {/* <Pressable style={styles.conPencl}>
                     <IconComunity name={"pencil"} style={styles.pencil} size={20} onPress={() => { navigation.goBack() }} />
-                </Pressable>
+                </Pressable> */}
                 <Text style={styles.descritption}>{auth.email}</Text>
                 <Text style={styles.descritption}>{profile.noTelp}</Text>
                 <Text style={styles.descritption}>{profile.adress}</Text>
@@ -52,12 +52,12 @@ function Profile() {
             <View style={{ flexDirection: 'column', paddingTop: 20 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingRight: 20, paddingLeft: 20 }}>
                     <Text style={styles.history}>Order History</Text>
-                    <Text style={styles.seemore}>See more</Text>
+                    <Text style={styles.seemore} onPress={()=>{navigation.navigate("History")}}>See more</Text>
                 </View>
                 <View style={{ paddingRight: 0 }}>
                     <ScrollView style={styles.slider} horizontal={true} showsHorizontalScrollIndicator={false}>
                         {transaction.history.length !== 0 && transaction.history.map((data)=>{
-                            return <Image source={{uri: data.image}} style={styles.imageHistory} />
+                            return <Image source={{uri: data.image}} style={styles.imageHistory} key={data.id} />
                         })}
                     </ScrollView>
                 </View>
@@ -81,8 +81,8 @@ function Profile() {
                     <IconComunity name={"chevron-right"} size={20} style={styles.arrowButton} />
                 </Pressable>
             </View>
-            <View style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 30, paddingBottom: 30 }}>
-                <ButtonCustom text={"Save"} textColor={"white"} color={"#6A4029"} />
+            <View style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 5, paddingBottom: 30 }}>
+                {/* <ButtonCustom text={"Save"} textColor={"white"} color={"#6A4029"} /> */}
             </View>
         </ScrollView>
     )

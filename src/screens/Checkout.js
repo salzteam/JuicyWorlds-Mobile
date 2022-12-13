@@ -20,7 +20,7 @@ import cartAction from '../redux/actions/transaction'
 
 function Checkout() {
     const [method, setMethod] = useState("2")
-    
+
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const cartState = useSelector(state => state.transaction.cart[0]);
@@ -51,6 +51,7 @@ function Checkout() {
     }
   return (
     <ScrollView style={styles.container}>
+        {/* <Text>HALAMAN CHECKOUT</Text> */}
         <View style={styles.navbar}>
             <IconComunity name={"chevron-left"} size={20} style={styles.icons} onPress={()=>{navigation.goBack()}}/>
             <Text style={styles.titleNavbar}>Checkout</Text>
@@ -82,17 +83,17 @@ function Checkout() {
                         </Pressable>
                     </View>
                 </View>
-                <View>
+                <View style={{flex: 1}}>
                     <Text style={styles.textMethod} onPress={()=>{setMethod("2")}}>Door delivery</Text>
-                    <Divider width={1} style={{width:"100%",marginTop:5,marginBottom: 3.5 }}/>
+                    <Divider width={1} style={{flex: 1,marginTop:5,marginBottom: 3.5 }}/>
                     <Text style={styles.textMethod} onPress={()=>{setMethod("3")}}>Pick up at store</Text>
-                    <Divider width={1} style={{width:"100%",marginTop:5,marginBottom: 3.5 }}/>
+                    <Divider width={1} style={{flex: 1,marginTop:5,marginBottom: 3.5 }}/>
                     <Text style={styles.textMethod} onPress={()=>{setMethod("1")}}>Dine</Text>
                 </View>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 25}}>
                 <Text style={styles.total}>Total</Text>
-                {cartState.length !== 0 && <Text style={styles.price}>IDR {costing(cartState.subTotal)}</Text>}
+                {cartState?.length !== 0 && <Text style={styles.price}>IDR {costing(cartState?.subTotal)}</Text>}
             </View>
             <View style={{paddingBottom: 30}}>
                 <TouchableOpacity
@@ -104,13 +105,14 @@ function Checkout() {
                             backgroundColor: "#6A4029",
                             height: 70,
                             borderRadius: 20,
-                            paddingLeft: 30,
+                            // paddingLeft: 30,
+                            justifyContent: 'center',
                             alignItems: 'center',
                             display: 'flex',
                             flexDirection: 'row',
                             alignContent: 'center'
                         }}>
-                        <Text style={{color: "white", fontFamily: 'Poppins-Bold', fontSize: 16, paddingLeft: 35}}>Proceed to payment</Text>
+                        <Text style={{color: "white", fontFamily: 'Poppins-Bold', fontSize: 16}}>Proceed to payment</Text>
                     </View>
                 </TouchableOpacity>
             </View>

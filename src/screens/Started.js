@@ -10,6 +10,7 @@ import {
   ImageBackground,
   Text,
   View,
+  ScrollView
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 // import axios from 'axios';
