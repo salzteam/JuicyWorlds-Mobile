@@ -35,7 +35,7 @@ function App() {
       >
         <Stack.Screen
           name="Started"
-          component={Token ? Home : Started}
+          component={Started}
           options={{
             headerShown: false,
           }}/>
