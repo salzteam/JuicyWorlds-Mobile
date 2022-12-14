@@ -1,4 +1,4 @@
-import React, {useState,useCallback} from 'react'
+import React, {useState,useEffect} from 'react'
 
 import {
     View,
@@ -18,6 +18,8 @@ import IconComunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Divider } from '@rneui/themed';
 import Sample from '../image/Hazel.png'
 
+import PushNotification from 'react-native-push-notification';
+
 import { useDispatch, useSelector } from 'react-redux';
 import cartAction from '../redux/actions/transaction'
 import axios from 'axios';
@@ -30,6 +32,7 @@ function Payment() {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const cartState = useSelector(state => state.transaction.cart[0]);
+    const cart = useSelector(state => state.transaction.cart);
     const token = useSelector(state => state.auth.userData.token);
 
     const size = () => {
@@ -39,6 +42,17 @@ function Payment() {
         return size
     }
 
+    const handleShowNotification = msg => {
+        PushNotification.localNotification({
+          channelId: 'local-notification',
+          title: 'Order Notification',
+          message: msg,
+        });
+    }
+
+    useEffect(()=>{
+        if (cart.length === 0) navigation.navigate("Home")
+    },[cart]) 
         const handlePress = () => {
             if (isLoading) return
             if (!Payment) return ToastAndroid.showWithGravityAndOffset(
@@ -66,15 +80,9 @@ function Payment() {
                 if (Payment === "1"){
                     Linking.openURL(result.data.redirctUrl)
                 }
-                ToastAndroid.showWithGravityAndOffset(
-                    `Success Create Transaction`,
-                    ToastAndroid.SHORT,
-                    ToastAndroid.TOP,
-                    25,
-                    50
-                );
+                handleShowNotification("Order Created")
                 dispatch(cartAction.deleteCartFulfilled())
-                navigation.navigate("Home")
+                navigation.navigate("History")
             }).catch((error)=>{
                 setLoading(false)
                 console.log(error);
@@ -170,6 +178,7 @@ function Payment() {
                     activeOpacity={0.8}
                     onPress={()=>{
                         handlePress()
+                        // handleShowNotification("Order Created")
                     }}>
                     <View
                         style={{
@@ -193,4 +202,4 @@ function Payment() {
   )
 }
 
-export default Payment
+export default Payment;

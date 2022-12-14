@@ -88,7 +88,7 @@ function History() {
 
     useEffect(()=>{
         if (transaction.history.length === 0 & transaction.err !== "data_not_found") {
-            dispatch(historyAction.getHistoryThunk("page=1&limit=6", auth.token))
+            dispatch(historyAction.getHistoryThunk("sort=newest&page=1&limit=6", auth.token))
         }
     },[transaction.history])
 

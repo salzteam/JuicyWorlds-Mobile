@@ -27,12 +27,9 @@ function Profile() {
     const auth = useSelector(state => state.auth.userData);
     const transaction = useSelector(state => state.transaction);
     const dispatch = useDispatch();
-    const [isLoading, setLoading] = useState(false)
-    const [isError, setError] = useState(true)
-
     useEffect(()=>{
         if (transaction.history.length === 0){
-            dispatch(historyAction.getHistoryThunk("page=1&limit=6",auth.token))
+            dispatch(historyAction.getHistoryThunk("sort=newest&page=1&limit=6",auth.token))
         }
     },[])
 
