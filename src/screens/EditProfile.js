@@ -33,7 +33,7 @@ function EditProfile() {
     const [body,setBody] = useState()
     const [allow, setAllow] = useState(false)
 
-    const [modal, setModalVisible] = useState(true)
+    const [modal, setModalVisible] = useState(false)
 
     const dispatch = useDispatch();
     const navigation = useNavigation();
