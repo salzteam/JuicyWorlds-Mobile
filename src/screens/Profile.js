@@ -34,7 +34,27 @@ function Profile() {
         if (transaction.history.length === 0){
             dispatch(historyAction.getHistoryThunk("page=1&limit=6",auth.token))
         }
-    },[dispatch])
+    },[])
+
+    useEffect(() => {
+        let refresh = false;
+        const removeFocusevent = navigation.addListener('focus', e => {
+        //   if (refresh) {
+        //     if (transaction.history.length === 0){
+        //         dispatch(historyAction.getHistoryThunk("page=1&limit=6",auth.token))
+        //     }
+        //   }
+        });
+        const removeBlurEvent = navigation.addListener('blur', e => {
+            dispatch(historyAction.resetHistoryFulfilled());
+            refresh = true;
+        });
+        return () => {
+          removeFocusevent();
+          removeBlurEvent();
+        };
+      }, [navigation,transaction.history]);
+
     return (
         <ScrollView style={styles.container}>
             <View style={styles.navbar}>
@@ -69,7 +89,8 @@ function Profile() {
                     )}
                 <View style={{ paddingRight: 0 }}>
                     <ScrollView style={styles.slider} horizontal={true} showsHorizontalScrollIndicator={false}>
-                        {transaction.history.length !== 0 && transaction.history.map((data)=>{
+                        {transaction.history.length !== 0 && transaction.history.map((data,index)=>{
+                            if (index <= 5)
                             return <Image source={{uri: data.image}} style={styles.imageHistory} key={data.id} />
                         })}
                     </ScrollView>

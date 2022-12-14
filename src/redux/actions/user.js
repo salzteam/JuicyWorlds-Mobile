@@ -28,15 +28,19 @@ const editProfileFulfilled = (data) => ({
   payload: { data },
 });
 
-  const getProfileThunk = (token) => {
+  const getProfileThunk = (token, nvgStarted, nvgHome) => {
     return async dispatch => {
       try {
         dispatch(getProfilePending());
         const result = await getProfile(token);
         dispatch(getProfileFulfilled(result.data));
+        typeof nvgHome === "function" && nvgHome()
       } catch (error) {
         dispatch(getProfileRejected(error.response.data.message || error.response.data.msg));
         console.log(error);
+        if (error.response.data.message === "You have to login first" || error.response.data.msg === "You have to login first") {
+          typeof nvgStarted === "function" && nvgStarted()
+        } 
       }
     };
   };

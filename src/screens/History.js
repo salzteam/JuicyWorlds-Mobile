@@ -10,7 +10,7 @@ import ViewOverflow from 'react-native-view-overflow';
 import {
     View,
     Image,
-    ScrollView,
+    ToastAndroid,
     Text,
     Pressable,
     TouchableOpacity,
@@ -46,6 +46,31 @@ function History() {
     const transaction = useSelector(state => state.transaction);
     const dispatch = useDispatch();
 
+    // useEffect(()=>{
+    //     setHistory(transaction.history)
+    //     // getPagination()
+    // },[transaction.history])
+
+    
+    useEffect(() => {
+        let refresh = false;
+        const removeFocusevent = navigation.addListener('focus', e => {
+        //   if (refresh) {
+        //     if (transaction.history.length === 0 & transaction.err !== "data_not_found") {
+        //         dispatch(historyAction.getHistoryThunk("page=1&limit=6", auth.token))
+        //     }
+        //   }
+        });
+        const removeBlurEvent = navigation.addListener('blur', e => {
+            dispatch(historyAction.resetHistoryFulfilled());
+            refresh = true;
+        });
+        return () => {
+          removeFocusevent();
+          removeBlurEvent();
+        };
+      }, [navigation,transaction.history]);
+
     const renderFooter = () => {
         return  (<View style={{flex: 1, paddingVertical: 20, justifyContent: 'center', paddingBottom: 10}}>
             {transaction.history.length !== 0 && transaction.isLoading && <ActivityIndicator size='large' color='black' />}
@@ -55,7 +80,7 @@ function History() {
 
     const getPagination = async () => {
         if (!transaction.nextHistory) return
-        dispatch(historyAction.getHistoryThunk(transaction.nextHistory, auth.token, concatData))
+        dispatch(historyAction.getHistoryThunk(transaction.nextHistory, auth.token))
         // setHistory((h)=>{
         //     return h.concat(newHistory)
         // })
@@ -63,20 +88,9 @@ function History() {
 
     useEffect(()=>{
         if (transaction.history.length === 0 & transaction.err !== "data_not_found") {
-            dispatch(historyAction.getHistoryThunk("page=1&limit=6", auth.token, concatData))
+            dispatch(historyAction.getHistoryThunk("page=1&limit=6", auth.token))
         }
     },[transaction.history])
-
-    const concatData = (news) => {
-        if (!transaction.nextHistory) return
-        if (transaction.isLoading) return
-        setHistory(history.concat(news))
-    }
-
-    useEffect(()=>{
-        setHistory(transaction.history)
-        // getPagination()
-    },[])
 
     const costing = (price) => {
         return (
@@ -94,26 +108,22 @@ function History() {
       }
 
       const deleteItems = (id) => {
-        const removeByAttr = function(arr, attr, value){
-            var i = arr.length;
-            while(i--){
-               if( arr[i] 
-                   && arr[i].hasOwnProperty(attr) 
-                   && (arguments.length > 2 && arr[i][attr] === value ) ){ 
-        
-                   arr.splice(i,1);
-        
-               }
-            }
-            return arr;
+        const changeData = () => setModalVisible()
+        const Errors = () => {
+            ToastAndroid.showWithGravityAndOffset(
+                `System error`,
+                ToastAndroid.SHORT,
+                ToastAndroid.TOP,
+                25,
+                50
+            );
+            setModalVisible()
         }
-        let data = history
-        removeByAttr(data, 'transaction_id', id);
-        setModalVisible()
+        dispatch(historyAction.deleteHistoryThunk(id, auth.token, changeData, Errors))
       }
     return (
     <View style={styles.container}>
-        {transaction.err !== "data_not_found" && (<>
+        {transaction.history.length >= 0 && (<>
                 <View style={{padding: 30}}>
                     <IconComunity name={"chevron-left"} size={20} style={styles.icons} onPress={()=>{navigation.goBack()}}/>
                     <Text style={styles.title}>Order History</Text>
@@ -122,8 +132,12 @@ function History() {
                         <Text style={styles.swipeText}>hold on an item to delete</Text>
                     </View>
                 </View>
-                <FlatList
-                    data={history}
+                {transaction.isLoading && transaction.history.length === 0 ?
+                 (
+                 <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+                    <ActivityIndicator size={"large"}/>
+                 </View>) : <FlatList
+                    data={transaction.history}
                     renderItem={({item}) => {
                         return (
                         <TouchableOpacity activeOpacity={0.5} style={{paddingLeft: 25, paddingRight: 25, marginVertical: 10}} 
@@ -159,7 +173,7 @@ function History() {
                                             style={[stylesModal.button, stylesModal.buttonClose]}
                                             onPress={()=>{deleteItems(item.transaction_id)}}
                                         >
-                                            <Text style={stylesModal.textStyle}>Delete</Text>
+                                            {transaction.isLoading ? <ActivityIndicator size='small' color='white' />:<Text style={stylesModal.textStyle}>Delete</Text>}
                                         </Pressable>
                                         </View>
                                     </View>
@@ -168,12 +182,12 @@ function History() {
                             </View>
                         </TouchableOpacity>
                     )}}
-                    onEndReachedThreshold={0.2}
+                    onEndReachedThreshold={0.5}
                     onEndReached={getPagination}
                     ListFooterComponent={renderFooter}
-                />
+                />}
             </>)}
-        {transaction.err === "data_not_found" && (
+        {transaction.err === "data_not_found" && transaction.history.length === 0 && (
             <View style={{flex: 1, padding:30}}>
                 <View style={{flexDirection: 'row'}}>
                     <IconComunity name={"chevron-left"} size={20} style={styles.icons} onPress={() => { navigation.goBack() }} />

@@ -15,15 +15,21 @@ import {
     StyleSheet
   } from 'react-native';
 
+import profileAction from '../redux/actions/user'
+import { useDispatch, useSelector } from 'react-redux';
+import userAction from '../redux/actions/user';
+
 function Splashscreen() {
     const [visible, setVisible] = useState(true)
     const navigation = useNavigation();
+    const dispatch = useDispatch();
+    const auth = useSelector(state => state.auth.userData);
+
     useEffect(() => {
-      setTimeout(() => {
-        navigation.dispatch(StackActions.replace('Started'));
-        // navigation.navigate('Welcome')
-      }, 3000);
-    }, [navigation]);
+      const navigateStarted = () => navigation.dispatch(StackActions.replace('Started'));
+      const navigateHome = () => navigation.dispatch(StackActions.replace('Home'));
+      dispatch(userAction.getProfileThunk(auth.token, navigateStarted, navigateHome))
+    });
   return (
     <View style={{flex: 1, backgroundColor: '#FFA500', justifyContent: 'center', alignItems: 'center'}}>
         <Image source={logo} style={{width: 300, height: 300}}/>

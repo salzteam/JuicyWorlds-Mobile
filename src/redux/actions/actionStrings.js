@@ -10,5 +10,7 @@ export const actionStrings = {
     deleteCart: "DELETE_CHART",
     toCheckout: "CHECKOUT_PRODUCT",
     getHistory: "GET_HISTORY",
+    deleteHistory: "DELETE_HISTORY",
+    resetHistory: "RESET_HISTORY",
     editProfile: "EDIT_PROFILE"
   };
