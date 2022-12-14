@@ -7,15 +7,7 @@ import IconIon from 'react-native-vector-icons/Ionicons'
 import IconComunity from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import { Divider } from '@rneui/themed';
-
-import Icon from "../../image/Vector.png";
-import Chart from "../../image/Chart.png";
-import Chat from "../../image/Chat.png";
-import Search from "../../image/Search.png";
 import styles from '../Navbar/StyleNavbar';
-import User from '../../image/User.png';
-import IconUser from '../../image/IconUser.png';
-import IconMenus from '../../image/menu.png';
 
 import {
   View,
@@ -64,6 +56,7 @@ function Navbar({children}) {
         <Pressable style={styles.continerSwipe} onPress={()=>{navigation.navigate("Profile")}}>
           <Image source={{uri:profile.image}} style={styles.imageDrawer}/>
           <Text style={styles.username}>{profile.displayName}</Text>
+          {auth.userData.role === "admin" && <Text style={styles.email}>{auth.userData.role}</Text>}
           <Text style={styles.email}>{email}</Text>
         </Pressable>
         <View style={{paddingLeft: 35, paddingRight: 35,paddingTop: 20, display: 'flex', flexDirection: 'column', justifyContent:'space-between'}}>
