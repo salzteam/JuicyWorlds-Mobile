@@ -5,6 +5,7 @@ import IconComunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import User from '../image/User.png'
 import DatePicker from 'react-native-date-picker'
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
+import { Divider } from '@rneui/themed';
 
 import {
     View,
@@ -15,7 +16,8 @@ import {
     TextInput,
     TouchableOpacity,
     ToastAndroid ,
-    ActivityIndicator
+    ActivityIndicator,
+    Modal
   } from 'react-native'; 
 
 import {useNavigation} from '@react-navigation/native';
@@ -30,6 +32,8 @@ function EditProfile() {
     const [displayDate, setDisplay] = useState()
     const [body,setBody] = useState()
     const [allow, setAllow] = useState(false)
+
+    const [modal, setModalVisible] = useState(true)
 
     const dispatch = useDispatch();
     const navigation = useNavigation();
@@ -65,13 +69,13 @@ function EditProfile() {
         )
     }
     const Error = (error) => {
-        ToastAndroid.showWithGravityAndOffset(
-            `${error}`,
-            ToastAndroid.SHORT,
-            ToastAndroid.TOP,
-            25,
-            50
-        );
+      ToastAndroid.showWithGravityAndOffset(
+          `${error}`,
+          ToastAndroid.SHORT,
+          ToastAndroid.TOP,
+          25,
+          50
+      );
     }
     let bodys = new FormData();
     if (file) bodys.append("image",  {
@@ -119,6 +123,31 @@ function EditProfile() {
         });
       };
 
+      let launchCameras = () => {
+        let options = {
+          storageOptions: {
+            saveToPhotos: true,
+            skipBackup: true,
+            path: 'images',
+          },
+        };
+        launchCamera(options, (response) => {
+          console.log('Response = ', response);
+          if (response.errorMessage) {
+            console.log(response);
+            return (ToastAndroid.showWithGravityAndOffset(
+              `Do not have access to open the camera`,
+              ToastAndroid.SHORT,
+              ToastAndroid.TOP,
+              25,
+              50
+            ))
+          }
+            setFile(response.assets);
+        });
+    
+      }
+
     let launchImageLibrarys = () => {
         let options = {
           storageOptions: {
@@ -128,15 +157,16 @@ function EditProfile() {
         };
         launchImageLibrary(options, (response) => {
           console.log('Response = ', response);
-          if (response.didCancel) {
-            console.log('User cancelled image picker');
-          } else if (response.error) {
-            console.log('ImagePicker Error: ', response.error);
-          } else if (response.customButton) {
-            console.log('User tapped custom button: ', response.customButton);
-          } else {
-            setFile(response.assets);
+          if (response.errorMessage) {
+            return (ToastAndroid.showWithGravityAndOffset(
+              `Do not have access to open the library`,
+              ToastAndroid.SHORT,
+              ToastAndroid.TOP,
+              25,
+              50
+            ))
           }
+          setFile(response.assets);
         });
       }
 
@@ -148,7 +178,7 @@ function EditProfile() {
         </View>
         <View style={styles.userinfo}>
             <Image source={file ? {uri: file[0].uri} : {uri: profile.image}} style={styles.image}/>
-            <Pressable style={styles.conPencl} onPress={launchImageLibrarys}>
+            <Pressable style={styles.conPencl} onPress={()=>setModalVisible(true)}>
                 <IconComunity name={"pencil"} style={styles.pencil}size={20}/>
             </Pressable>
         </View>
@@ -230,6 +260,33 @@ function EditProfile() {
                 {isLoading?<ActivityIndicator size='large' color='white' /> :<Text style={{color: "white", fontFamily: 'Poppins-Black', fontSize: 17}}>Save and Update</Text>}
             </View>
         </TouchableOpacity>
+        <Modal
+            visible={modal}
+            transparent={true}
+            onRequestClose={() => {
+            setModalVisible();
+            }}
+        >
+            <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <View style={{justifyContent: 'flex-end', position: 'absolute', right: 15, top: 15}}>
+                  <IconComunity name='window-close' size={25} onPress={()=>setModalVisible(!modal)}/>
+              </View>
+              <Pressable style={{marginTop: 20,marginBottom: 15 ,padding: 10, backgroundColor: '#DCDCDC'}} onPress={()=>{
+                launchCameras()
+                setModalVisible(!modal)
+              }}>
+                <Text style={{fontFamily: 'Poppins-Black', color: '#868686', fontSize: 17, textAlign: 'center'}}>OPEN CAMERA</Text>
+              </Pressable>
+              <Pressable style={{padding: 10,backgroundColor: '#DCDCDC'}} onPress={()=>{
+                launchImageLibrarys()
+                setModalVisible(!modal)
+              }}>
+                <Text style={{fontFamily: 'Poppins-Black', color: '#868686', fontSize: 17, textAlign: 'center'}}>OPEN IMAGE LIBRARY</Text>
+              </Pressable>
+            </View>
+            </View>
+        </Modal>
     </ScrollView>
   )
 }

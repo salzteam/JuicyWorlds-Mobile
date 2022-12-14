@@ -125,7 +125,67 @@ const styles = StyleSheet.create({
     },
     berubah:{
         marginVertical: 10
-    }
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'rgba(0,0,0,0.5)'
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        // alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+      },
+      button: {
+        borderRadius: 20,
+        width: 100,
+        marginHorizontal: 10,
+        padding: 10,
+        elevation: 2
+      },
+      buttonClose: {
+        backgroundColor: "#6A4029",
+      },
+      textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+      },
+      modalText: {
+        fontFamily:'Poppins-Bold',
+        width: 200,
+        color: 'black',
+        fontSize: 25,
+        marginBottom: 15,
+        textAlign: "center"
+      },
+      notif:{
+        position: 'absolute',
+        width:12,
+        height: 12,
+        backgroundColor: 'black',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 100,
+        right: 0,
+        top: 0
+      },
+      textNotif:{
+        fontFamily: 'Poppins-Bold',
+        fontSize: 8,
+        color: 'white'
+      }
 })
 
 export default styles;
