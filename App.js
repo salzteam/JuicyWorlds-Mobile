@@ -20,6 +20,7 @@ import Cart from "./src/screens/Cart"
 import Checkout from "./src/screens/Checkout"
 import Payment from "./src/screens/Payment"
 import Splashscreen from "./src/screens/Splashscreen"
+import Search from "./src/screens/Search"
 
 function App() {
   const Stack = createStackNavigator();
@@ -139,6 +140,13 @@ function App() {
         <Stack.Screen
           name="Splashscreen"
           component={Splashscreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Search"
+          component={Search}
           options={{
             headerShown: false,
           }}

@@ -146,7 +146,7 @@ function Navbar({children}) {
                   {/* <Image source={Chat} style={styles.icon}/> */}
                   {/* <Image source={Search} style={styles.icon}/> */}
                   <Icons name={"rocketchat"} style={{transform: [{rotateY: '180deg'}], fontSize: 25,marginHorizontal: 7}}/>
-                  <IconIon name={"search-outline"} style={styles.Icons}/>
+                  <IconIon name={"search-outline"} style={styles.Icons} onPress={()=>{navigation.navigate("Search")}}/>
                   <IconIon name={"cart-outline"} style={styles.Icons} onPress={()=>{navigation.navigate("Cart")}}/>
                   {cartState.cart.length !== 0 && (<View style={styles.notif}>
                       <Text style={styles.textNotif}>1</Text>

@@ -4,6 +4,7 @@ export const actionStrings = {
     authRegister: "AUTH_REGISTER",
     authForgot: "AUTH_FORGOT_PASSWORD",
     getProfile: "GET_PROFILE_USER",
+    getProducts: "GET_PRODUCTS",
     getFavorite: "GET_PRODUCT_FAVORITE",
     getProductPromo: "GET_PRODUCT_PROMO" ,
     addCart: "ADD_TO_CHART",
@@ -12,5 +13,7 @@ export const actionStrings = {
     getHistory: "GET_HISTORY",
     deleteHistory: "DELETE_HISTORY",
     resetHistory: "RESET_HISTORY",
-    editProfile: "EDIT_PROFILE"
+    resetProducts: "RESET_PRODUCTS",
+    editProfile: "EDIT_PROFILE",
+    getFilter: "GET_FILTER"
   };

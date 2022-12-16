@@ -55,11 +55,6 @@ function History() {
     useEffect(() => {
         let refresh = false;
         const removeFocusevent = navigation.addListener('focus', e => {
-        //   if (refresh) {
-        //     if (transaction.history.length === 0 & transaction.err !== "data_not_found") {
-        //         dispatch(historyAction.getHistoryThunk("page=1&limit=6", auth.token))
-        //     }
-        //   }
         });
         const removeBlurEvent = navigation.addListener('blur', e => {
             dispatch(historyAction.resetHistoryFulfilled());
