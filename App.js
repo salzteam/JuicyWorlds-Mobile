@@ -27,6 +27,7 @@ import EditPromo from "./src/screens/EditPromo"
 import NewProduct from "./src/screens/NewProduct"
 import NewPromo from "./src/screens/NewPromo"
 import Coupon from "./src/screens/Coupon"
+import SalesChart from "./src/screens/SalesChart"
 
 function App() {
   const Stack = createStackNavigator();
@@ -195,6 +196,13 @@ function App() {
         <Stack.Screen
           name="EditPromo"
           component={EditPromo}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="SalesChart"
+          component={SalesChart}
           options={{
             headerShown: false,
           }}

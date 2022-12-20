@@ -98,10 +98,15 @@ function Navbar({children}) {
               <Text style={styles.textBottom}>All menu</Text>
             </Pressable>
             <Divider style={{width:"90%",margin:3 }}/>
-            <View style={styles.containerBottom}>
+            {auth.userData.role !== "admin" ? <View style={styles.containerBottom}>
               <Icons name={"sticky-note"} size={20} style={styles.imageBottom}/>
               <Text style={styles.textBottom}>Privacy policy</Text>
-            </View>
+            </View> : <Pressable style={styles.containerBottom} onPress={()=>{
+              refDrawer.current.closeDrawer()
+              navigation.navigate("SalesChart")}}>
+              <Icons name={"sticky-note"} size={20} style={styles.imageBottom}/>
+              <Text style={styles.textBottom}>Sales Report</Text>
+            </Pressable>}
             <Divider style={{width:"90%",margin:3 }}/>
             <View style={styles.containerBottom}>
               {/* <Image source={IconUser} style={styles.imageBottom}/> */}
