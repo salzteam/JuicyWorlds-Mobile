@@ -2,7 +2,6 @@ import React from 'react'
 
 import styles from '../styles/Promo';
 import IconComunity from 'react-native-vector-icons/MaterialCommunityIcons';
-import Sample from '../image/food4.png';
 
 import {
     View,
@@ -13,11 +12,11 @@ import {
   } from 'react-native'; 
 
 import {useNavigation} from '@react-navigation/native';
-import { useSelector } from 'react-redux';
 
-function Promo() {
+function Promo(props) {
     const navigation = useNavigation()
-    const product = useSelector(state => state.product);
+    const product = props.route.params
+    console.log(props);
 
     const costing = (price) => {
         return (
@@ -38,7 +37,7 @@ function Promo() {
                 <Text style={styles.category}>Stay Hungry !</Text>
                 <Text style={styles.second}>Good deals update every wednesday</Text>
                 <View style={styles.containerCard}>
-                    {product.Product_Promo?.map((data)=>{
+                    {product?.map((data)=>{
                         if(data.code !== "none"){
                             return (
                                 <>

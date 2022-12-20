@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 
 import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 import IconFW from 'react-native-vector-icons/FontAwesome'
@@ -13,7 +13,6 @@ import {
   View,
   Image,
   Text,
-  useWindowDimensions,
   TouchableOpacity,
   Modal,
   Pressable,
@@ -23,20 +22,22 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import authAction from '../../redux/actions/auth';
+import { StackActions } from '@react-navigation/native';
 
 function Navbar({children}) {
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation()
-  const {height, width} = useWindowDimensions();
   const dispatch = useDispatch();
   const profile = useSelector(state => state.profile.profile);
   const email = useSelector(state => state.auth.userData.email);
   const auth = useSelector(state => state.auth);
   const cartState = useSelector(state => state.transaction);
 
+  const refDrawer = useRef()
+
   const logoutHandler = () => {
     const LogoutSuccess = () => {
-      navigation.navigate('Welcome')
+      navigation.dispatch(StackActions.replace('Welcome'))
     }
     const LogoutError = (error) => {
         ToastAndroid.showWithGravityAndOffset(
@@ -53,7 +54,9 @@ function Navbar({children}) {
   const renderDrawer = () => {
     return (
       <View>
-        <Pressable style={styles.continerSwipe} onPress={()=>{navigation.navigate("Profile")}}>
+        <Pressable style={styles.continerSwipe} onPress={()=>{
+          refDrawer.current.closeDrawer()
+          navigation.navigate("Profile")}}>
           <Image source={{uri:profile.image}} style={styles.imageDrawer}/>
           <Text style={styles.username}>{profile.displayName}</Text>
           {auth.userData.role === "admin" && <Text style={styles.email}>{auth.userData.role}</Text>}
@@ -61,23 +64,39 @@ function Navbar({children}) {
         </Pressable>
         <View style={{paddingLeft: 35, paddingRight: 35,paddingTop: 20, display: 'flex', flexDirection: 'column', justifyContent:'space-between'}}>
           <View>
-            <Pressable style={styles.containerBottom} onPress={()=>{navigation.navigate("EditProfile")}}>
+            {auth.userData.role !== "admin" &&<Pressable style={styles.containerBottom} onPress={()=>{
+              refDrawer.current.closeDrawer()
+              navigation.navigate("EditProfile")}}>
               {/* <Image source={IconUser} style={styles.imageBottom}/> */}
               <Icons name={"user-circle"} size={20} style={styles.imageBottom}/>
               <Text style={styles.textBottom}>Edit Profile</Text>
-            </Pressable>
+            </Pressable>}
+            {auth.userData.role === "admin" &&<Pressable style={styles.containerBottom} onPress={()=>{
+              refDrawer.current.closeDrawer()
+              navigation.navigate("Coupon")}}>
+              {/* <Image source={IconUser} style={styles.imageBottom}/> */}
+              {/* <Icons name={"user-circle"} size={20} style={styles.imageBottom}/> */}
+              <IconComunity name={"percent-outline"} style={{fontSize:22,marginRight: 15,}} onPress={()=>{
+                refDrawer.current.closeDrawer()
+                navigation.navigate("Coupon")}}/>
+              <Text style={styles.textBottom}>All Coupons</Text>
+            </Pressable>}
             <Divider style={{width:"90%",margin:3 }}/>
-            <Pressable style={styles.containerBottom} onPress={()=>{navigation.navigate("History")}}>
+            <Pressable style={styles.containerBottom} onPress={()=>{
+              refDrawer.current.closeDrawer()
+              navigation.navigate("History")}}>
               {/* <Image source={IconUser} style={styles.imageBottom}/> */}
               <IconComunity name={"cart-arrow-down"} size={20} style={styles.imageBottom}/>
               <Text style={styles.textBottom}>Orders</Text>
             </Pressable>
             <Divider style={{width:"90%",margin:3 }}/>
-            <View style={styles.containerBottom}>
+            <Pressable style={styles.containerBottom}onPress={()=>{
+                refDrawer.current.closeDrawer()
+                navigation.navigate("Search")}}>
               {/* <Image source={IconMenus} style={styles.imageBottom}/> */}
               <IconComunity name={"food-outline"} size={20} style={styles.imageBottom}/>
               <Text style={styles.textBottom}>All menu</Text>
-            </View>
+            </Pressable>
             <Divider style={{width:"90%",margin:3 }}/>
             <View style={styles.containerBottom}>
               <Icons name={"sticky-note"} size={20} style={styles.imageBottom}/>
@@ -115,7 +134,9 @@ function Navbar({children}) {
               </Pressable>
               <Pressable
                 style={[styles.button, styles.buttonClose]}
-                onPress={logoutHandler}
+                onPress={()=>{
+                  refDrawer.current.closeDrawer()
+                  logoutHandler()}}
               >
                 {auth.isLoading ? <ActivityIndicator size='small' color='white' /> : <Text style={styles.textStyle}>YES</Text>}
               </Pressable>
@@ -130,6 +151,7 @@ function Navbar({children}) {
   return (
     <>
       <DrawerLayout
+        ref={refDrawer}
         drawerWidth={300}
         drawerPosition={DrawerLayout.positions.Left}
         drawerType="front"
@@ -138,16 +160,17 @@ function Navbar({children}) {
         drawerContainerStyle={{borderTopRightRadius: 30}}
         renderNavigationView={renderDrawer}>
           <View style={styles.sectionContainer}>
-              <View onPress={() => DrawerLayout.current.openDrawer()}>
+              <Pressable onPress={() => refDrawer.current.openDrawer()} >
                   {/* <Image source={Icon} /> */}
                   <IconComunity name={"chevron-double-right"} style={{fontSize: 40}}/>
-              </View>
+              </Pressable>
               <View style={styles.left}>
                   {/* <Image source={Chat} style={styles.icon}/> */}
                   {/* <Image source={Search} style={styles.icon}/> */}
                   <Icons name={"rocketchat"} style={{transform: [{rotateY: '180deg'}], fontSize: 25,marginHorizontal: 7}}/>
                   <IconIon name={"search-outline"} style={styles.Icons} onPress={()=>{navigation.navigate("Search")}}/>
-                  <IconIon name={"cart-outline"} style={styles.Icons} onPress={()=>{navigation.navigate("Cart")}}/>
+                  {auth.userData.role !== "admin" && <IconIon name={"cart-outline"} style={styles.Icons} onPress={()=>{navigation.navigate("Cart")}}/>}
+                  {/* {auth.userData.role === "admin" && <IconComunity name={"cart-percent"} style={styles.Icons} onPress={()=>{navigation.navigate("Cart")}}/>} */}
                   {cartState.cart.length !== 0 && (<View style={styles.notif}>
                       <Text style={styles.textNotif}>1</Text>
                   </View>)}

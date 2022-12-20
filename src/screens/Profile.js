@@ -20,31 +20,30 @@ import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import historyAction from '../redux/actions/transaction';
 
-function Profile() {
+function Profile(props) {
 
+    
     const navigation = useNavigation()
     const profile = useSelector(state => state.profile.profile);
     const auth = useSelector(state => state.auth.userData);
     const transaction = useSelector(state => state.transaction);
     const dispatch = useDispatch();
-    useEffect(()=>{
-        if (transaction.history.length === 0){
-            dispatch(historyAction.getHistoryThunk("sort=newest&page=1&limit=6",auth.token))
-        }
-    },[])
+    // useEffect(()=>{
+    //     if (transaction.history.length === 0){
+    //         dispatch(historyAction.getHistoryThunk("sort=newest&page=1&limit=6",auth.token))
+    //     }
+    // },[])
 
     useEffect(() => {
-        let refresh = false;
+        let reset = false;
         const removeFocusevent = navigation.addListener('focus', e => {
-        //   if (refresh) {
-        //     if (transaction.history.length === 0){
-        //         dispatch(historyAction.getHistoryThunk("page=1&limit=6",auth.token))
-        //     }
-        //   }
+            if (!reset){
+                dispatch(historyAction.getHistoryThunk("page=1&limit=6",auth.token))
+            }
         });
         const removeBlurEvent = navigation.addListener('blur', e => {
-            dispatch(historyAction.resetHistoryFulfilled());
-            refresh = true;
+            reset = true
+            // dispatch(historyAction.resetHistoryFulfilled());
         });
         return () => {
           removeFocusevent();
@@ -68,34 +67,43 @@ function Profile() {
                 <Text style={styles.descritption}>{profile.noTelp}</Text>
                 <Text style={styles.descritption}>{profile.adress}</Text>
             </View>
-            <Divider width={8} style={{ width: "100%", marginTop: 15 }} />
-            <View style={{ flexDirection: 'column', paddingTop: 20 }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingRight: 20, paddingLeft: 20 }}>
-                    <Text style={styles.history}>Order History</Text>
-                    <Text style={styles.seemore} onPress={()=>{navigation.navigate("History")}}>See more</Text>
+            {auth.role !== "admin" && 
+            (<>
+                <Divider width={8} style={{ width: "100%", marginTop: 15 }} />
+                <View style={{ flexDirection: 'column', paddingTop: 20 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingRight: 20, paddingLeft: 20 }}>
+                        <Text style={styles.history}>Order History</Text>
+                        <Text style={styles.seemore} onPress={()=>{navigation.navigate("History")}}>See more</Text>
+                    </View>
+                        {transaction.isLoading && (
+                            <View style={{paddingTop: 30, paddingBottom: 20}}>
+                                <ActivityIndicator size='large' color='black' />
+                            </View>
+                        )}
+                        {transaction.err === "data_not_found" && (
+                            <View style={{paddingTop: 30, paddingBottom: 20, justifyContent:'center', alignItems: 'center'}}>
+                                <Text style={{fontFamily: 'Poppins-Bold'}}>Nothing Transactions Here</Text>
+                            </View>
+                        )}
+                    <View style={{ paddingRight: 0 }}>
+                        <ScrollView style={styles.slider} horizontal={true} showsHorizontalScrollIndicator={false}>
+                            {transaction.history.length !== 0 && transaction.history.map((data,index)=>{
+                                if (index <= 5)
+                                return <Image source={{uri: data.image}} style={styles.imageHistory} key={data.id} />
+                            })}
+                        </ScrollView>
+                    </View>
                 </View>
-                    {transaction.isLoading && (
-                        <View style={{paddingTop: 30, paddingBottom: 20}}>
-                            <ActivityIndicator size='large' color='black' />
-                        </View>
-                    )}
-                    {transaction.err === "data_not_found" && (
-                        <View style={{paddingTop: 30, paddingBottom: 20, justifyContent:'center', alignItems: 'center'}}>
-                            <Text style={{fontFamily: 'Poppins-Bold'}}>Nothing Transactions Here</Text>
-                        </View>
-                    )}
-                <View style={{ paddingRight: 0 }}>
-                    <ScrollView style={styles.slider} horizontal={true} showsHorizontalScrollIndicator={false}>
-                        {transaction.history.length !== 0 && transaction.history.map((data,index)=>{
-                            if (index <= 5)
-                            return <Image source={{uri: data.image}} style={styles.imageHistory} key={data.id} />
-                        })}
-                    </ScrollView>
-                </View>
-            </View>
-            <Divider width={8} style={{ width: "100%", marginTop: 15 }} />
+                <Divider width={8} style={{ width: "100%", marginTop: 15 }} />
+            </>)}
+            {auth.role === "admin" &&<View style={styles.containerNavigation}>
+                <Pressable style={styles.button} onPress={()=>navigation.navigate("EditProfile")}>
+                    <Text style={styles.textButton}>Edit Profile</Text>
+                    <IconComunity name={"chevron-right"} size={20} style={styles.arrowButton} />
+                </Pressable>
+            </View>}
             <View style={styles.containerNavigation}>
-                <Pressable style={styles.button}>
+                <Pressable style={styles.button} onPress={()=>navigation.navigate("EditPassword")}>
                     <Text style={styles.textButton}>Edit Password</Text>
                     <IconComunity name={"chevron-right"} size={20} style={styles.arrowButton} />
                 </Pressable>

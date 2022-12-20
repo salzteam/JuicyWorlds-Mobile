@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 
 import styles from '../styles/Favorite';
 import IconComunity from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -13,11 +13,11 @@ import {
   } from 'react-native'; 
 
 import {useNavigation} from '@react-navigation/native';
-import { useSelector } from 'react-redux';
 
-function Favorite() {
+function Favorite(props) {
     const navigation = useNavigation()
-    const product = useSelector(state => state.product);
+
+    const data = props.route.params
 
     const costing = (price) => {
         return (
@@ -38,7 +38,7 @@ function Favorite() {
             <View>
                 <Text style={styles.category}>Food</Text>
                 <View style={styles.containerCard}>
-                    {product.Favorite?.map((data)=>{
+                    {data?.map((data)=>{
                         if(data.category_name === "foods" && data.product_name !== "none"){
                             return (
                                 <>
@@ -58,7 +58,7 @@ function Favorite() {
             <View>
                 <Text style={styles.category}>Coffee</Text>
                 <View style={styles.containerCard}>
-                    {product.Favorite?.map((data)=>{
+                    {data?.map((data)=>{
                         if(data.category_name === "coffee" && data.product_name !== "none"){
                             return (
                                 <>
@@ -78,7 +78,7 @@ function Favorite() {
             <View>
                 <Text style={styles.category}>Non Coffee</Text>
                 <View style={styles.containerCard}>
-                    {product.Favorite?.map((data)=>{
+                    {data?.map((data)=>{
                         if(data.category_name === "non coffee" && data.product_name !== "none"){
                             return (
                                 <>
@@ -98,7 +98,7 @@ function Favorite() {
             <View>
                 <Text style={styles.category}>Add Ons</Text>
                 <View style={styles.containerCard}>
-                    {product.Favorite?.map((data)=>{
+                    {data?.map((data)=>{
                         if(data.category_name === "addon" && data.product_name !== "none"){
                             return (
                                 <>

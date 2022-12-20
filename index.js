@@ -41,7 +41,7 @@ PushNotification.configure({
      * - if you are not using remote notification or do not have Firebase installed, use this:
      *     requestPermissions: Platform.OS === 'ios'
      */
-    requestPermissions: Platform.OS === 'ios',
+    requestPermissions: true,
   });
   
   // create channel for notification

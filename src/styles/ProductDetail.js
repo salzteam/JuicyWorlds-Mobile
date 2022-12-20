@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         position: 'relative',
         marginTop: 100,
-        borderTopRightRadius: 75
+        borderTopRightRadius: 75,
+        minHeight: 570
     },
     product: {
         width: 170,

@@ -7,6 +7,7 @@ const initialState = {
   Products: [],
   nextPage: null,
   isLoading: false,
+  LoadingProduct: false,
   isError: false,
   isFulfilled: false,
   err: null,
@@ -25,6 +26,7 @@ const productReducer = (prevState = initialState, { payload, type }) => {
         Products: [],
         nextPage: null,
         isLoading: false,
+        LoadingProduct: false,
         isError: false,
         isFulfilled: false,
         err: null,
@@ -37,6 +39,8 @@ const productReducer = (prevState = initialState, { payload, type }) => {
       return {
         ...prevState,
         Products: [],
+        Favorite: [],
+        Product_Promo: [],
         nextPage: null,
         isLoading: false,
         isError: false,
@@ -102,14 +106,14 @@ const productReducer = (prevState = initialState, { payload, type }) => {
   case getProducts.concat("_", Pending):
     return {
       ...prevState,
-      isLoading: true,
+      LoadingProduct: true,
       isError: false,
       isFulfilled: false,
     };
   case getProducts.concat("_", Rejected):
     return {
       ...prevState,
-      isLoading: false,
+      LoadingProduct: false,
       isError: true,
       isFulfilled: false,
       err: payload.error,
@@ -117,7 +121,7 @@ const productReducer = (prevState = initialState, { payload, type }) => {
   case getProducts.concat("_", Fulfilled):
     return {
       ...prevState,
-      isLoading: false,
+      LoadingProduct: false,
       isError: false,
       isFulfilled: true,
       Products: prevState.Products.concat(payload.data),

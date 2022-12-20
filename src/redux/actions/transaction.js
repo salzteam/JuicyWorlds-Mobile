@@ -1,5 +1,5 @@
 import { ActionType } from "redux-promise-middleware";
-import { history, deleteHistory } from "../../utils/transaction";
+import { history, deleteHistory, getHistoryAdmin, editHistoryAdmin, allDoneHistoryAdmin } from "../../utils/transaction";
 import { actionStrings } from "./actionStrings";
 
 const { Pending, Rejected, Fulfilled } = ActionType;
@@ -34,6 +34,25 @@ const getHistoryPending = () => ({
   const getHistoryFulfilled = (data) => ({
     type: actionStrings.getHistory.concat("_", Fulfilled),
     payload: { data },
+  });
+  const editHistoryAdminFulfilled = (data) => ({
+    type: actionStrings.editHistoryAdmin.concat("_", Fulfilled),
+    payload: { data },
+  });
+// ========================= END ==========================
+
+// =================== GET HISTORY ADMIN ==================
+
+  const getHistoryAdminFulfilled = (data) => ({
+    type: actionStrings.getHistoryAdmin.concat("_", Fulfilled),
+    payload: { data },
+  });
+  const getHistoryAdminPending = () => ({
+    type: actionStrings.getHistoryAdmin.concat("_", Pending),
+  });
+  const getHistoryAdminRejected = (error) => ({
+    type: actionStrings.getHistoryAdmin.concat("_", Rejected),
+    payload: { error },
   });
   // ========================= END ==========================
 
@@ -79,13 +98,62 @@ const deleteHistoryThunk = (id, token, close, errors) => {
   }
 }
 
+const getHistoryAdminThunk = (paginasi,token) => {
+  return async dispatch => {
+    try {
+      dispatch(getHistoryAdminPending())
+      const result = await getHistoryAdmin(paginasi,token)
+      dispatch(getHistoryAdminFulfilled(result.data.data))
+    } catch (error) {
+      dispatch(getHistoryAdminRejected(error.response.data.message || error.response.data.msg));
+      console.log(error);
+    }
+  }
+}
+
+const editHistoryAdminThunk = (id,token, cb) => {
+  return async dispatch => {
+    try {
+      dispatch(getHistoryAdminPending())
+      await editHistoryAdmin(id,token)
+      const results = await getHistoryAdmin("",token)
+      dispatch(editHistoryAdminFulfilled(results.data.data))
+      typeof cb === "function" && cb()
+    } catch (error) {
+      dispatch(getHistoryAdminRejected(error.response.data.message || error.response.data.msg));
+      console.log(error);
+      typeof cb === "function" && cb()
+    }
+  }
+}
+
+const allDoneAdminThunk = (token, cb) => {
+  return async dispatch => {
+    try {
+      dispatch(getHistoryAdminPending())
+      await allDoneHistoryAdmin(token)
+      const results = await getHistoryAdmin("",token)
+      dispatch(editHistoryAdminFulfilled(results.data.data))
+      typeof cb === "function" && cb()
+    } catch (error) {
+      dispatch(getHistoryAdminRejected(error.response.data.message || error.response.data.msg));
+      console.log(error);
+      typeof cb === "function" && cb()
+    }
+  }
+}
+
+
 const transactionAction = {
     addCartFulfilled,
     deleteCartFulfilled,
     checkoutFulfilled,
     getHistoryThunk,
     deleteHistoryThunk,
-    resetHistoryFulfilled
+    resetHistoryFulfilled,
+    getHistoryAdminThunk,
+    editHistoryAdminThunk,
+    allDoneAdminThunk
 };
 
 export default transactionAction;

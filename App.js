@@ -21,6 +21,12 @@ import Checkout from "./src/screens/Checkout"
 import Payment from "./src/screens/Payment"
 import Splashscreen from "./src/screens/Splashscreen"
 import Search from "./src/screens/Search"
+import EditProduct from "./src/screens/EditProduct"
+import EditPassword from "./src/screens/EditPassword"
+import EditPromo from "./src/screens/EditPromo"
+import NewProduct from "./src/screens/NewProduct"
+import NewPromo from "./src/screens/NewPromo"
+import Coupon from "./src/screens/Coupon"
 
 function App() {
   const Stack = createStackNavigator();
@@ -147,6 +153,48 @@ function App() {
         <Stack.Screen
           name="Search"
           component={Search}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="EditProduct"
+          component={EditProduct}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="EditPassword"
+          component={EditPassword}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="NewProduct"
+          component={NewProduct}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="NewPromo"
+          component={NewPromo}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Coupon"
+          component={Coupon}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="EditPromo"
+          component={EditPromo}
           options={{
             headerShown: false,
           }}

@@ -15,5 +15,7 @@ export const actionStrings = {
     resetHistory: "RESET_HISTORY",
     resetProducts: "RESET_PRODUCTS",
     editProfile: "EDIT_PROFILE",
-    getFilter: "GET_FILTER"
+    getFilter: "GET_FILTER",
+    getHistoryAdmin: 'GET_TRANSACTION_ADMIN',
+    editHistoryAdmin: 'EDIT_HISTORY_ADMIN'
   };

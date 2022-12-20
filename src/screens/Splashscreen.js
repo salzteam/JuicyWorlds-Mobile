@@ -15,7 +15,6 @@ import {
     StyleSheet
   } from 'react-native';
 
-import profileAction from '../redux/actions/user'
 import { useDispatch, useSelector } from 'react-redux';
 import userAction from '../redux/actions/user';
 

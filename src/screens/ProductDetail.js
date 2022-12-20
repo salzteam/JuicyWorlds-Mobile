@@ -16,6 +16,7 @@ import {
     Modal
   } from 'react-native';
 
+import { StackActions } from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
@@ -33,6 +34,7 @@ function ProductDetail(props) {
 
     const dispatch = useDispatch();
     const cartState = useSelector(state => state.transaction);
+    const auth = useSelector(state => state.auth.userData);
 
     useEffect(()=>{
         const BaseUrl = process.env.BACKEND_URL
@@ -61,12 +63,19 @@ function ProductDetail(props) {
                 50
             );
         }
+        if (auth.role === "admin") return ToastAndroid.showWithGravityAndOffset(
+            `Admin can't order product`,
+            ToastAndroid.SHORT,
+            ToastAndroid.TOP,
+            25,
+            50
+        );
         if (!modalVisible && cartState.cart.length !== 0) return setModalVisible(true);
         const data = {
-            "id" : product?.dataProduct.id,
-            "name_product" : product?.dataProduct.product_name,
-            "price": product?.dataPromo === 999 ? product.dataProduct.price : (parseInt(product?.dataPromo.discount) / 100) * parseInt(product?.dataProduct.price),
-            "image": product?.dataProduct.image,
+            "id" : product?.dataProduct?.id,
+            "name_product" : product?.dataProduct?.product_name,
+            "price": product?.dataPromo === 999 ? product.dataProduct?.price : (parseInt(product?.dataPromo.discount) / 100) * parseInt(product?.dataProduct?.price),
+            "image": product?.dataProduct?.image,
             "promo": product?.dataPromo === 999 ? product.dataPromo : product.dataPromo.id,
             "size": size,
         }
@@ -92,8 +101,11 @@ function ProductDetail(props) {
   return (
     <ScrollView style={styles.container}>
         <View style={styles.navbar}>
-            <IconComunity name='chevron-left' size={22} style={styles.icon} onPress={()=>{navigation.goBack()}}/>
-            <IconComunity name='cart-outline' size={22} style={styles.icon} onPress={()=>{navigation.navigate("Cart")}}/>
+            <IconComunity name='chevron-left' size={22} style={styles.icon} onPress={()=>{navigation.dispatch(StackActions.replace('Home'))}}/>
+            <IconComunity name={auth.role === "admin" ? 'pencil' :'cart-outline'} size={22} style={styles.icon} onPress={()=>{
+                auth.role !== "admin" && navigation.navigate("Cart")
+                auth.role === "admin" && navigation.navigate("EditProduct", product)
+                }}/>
             {cartState.cart.length !== 0 && (<View style={styles.notif}>
                 <Text style={styles.textNotif}>1</Text>
             </View>)}
@@ -101,21 +113,21 @@ function ProductDetail(props) {
         <View style={styles.main}>
             <View style={styles.price}>
                 {product?.dataPromo === 999 ? (
-                    <Text style={styles.priceText}>{product ? costing(product?.dataProduct.price) : ""}</Text>
+                    <Text style={styles.priceText}>{product ? costing(product?.dataProduct?.price) : ""}</Text>
                 ):
                     <>
-                        <Text style={styles.strip}>  {product ?costing(product?.dataProduct.price) :""}  </Text>
-                        <Text style={styles.priceTextDisount}>{product ? costing((parseInt(product?.dataPromo.discount) / 100) * parseInt(product?.dataProduct.price)): ""}</Text>
+                        <Text style={styles.strip}>{product ?costing(product?.dataProduct?.price) :""}  </Text>
+                        <Text style={styles.priceTextDisount}>{product ? costing((parseInt(product?.dataPromo.discount) / 100) * parseInt(product?.dataProduct?.price)): ""}</Text>
                     </>
                 }
             </View>
             <View style={styles.top}>
-                <Image source={{uri: product?.dataProduct.image}} style={styles.product}/>
-                <Text style={styles.Title}>{product?.dataProduct.product_name}</Text>
+                <Image source={{uri: product?.dataProduct?.image}} style={styles.product}/>
+                <Text style={styles.Title}>{product?.dataProduct?.product_name}</Text>
             </View>
             <View style={styles.bottom}>
                 <Text style={styles.firstText}>Delivery only on <Text style={{color:'#6A4029', fontFamily: 'Poppins-Bold',}}>Monday to friday </Text> at <Text style={{color:'#6A4029', fontFamily: 'Poppins-Bold',}}>1 - 7 pm</Text></Text>
-                <Text style={styles.description}>{product?.dataProduct.description}</Text>
+                <Text style={styles.description}>{product?.dataProduct?.description}</Text>
                 <Text style={styles.sizeText}> Choose a size</Text>
                 <View style={{display: 'flex', justifyContent: 'center', flexDirection:'row'}}>
                     <Pressable style={size === "1" ? styles.selected : styles.button} onPress={()=>{setSize("1")}}>

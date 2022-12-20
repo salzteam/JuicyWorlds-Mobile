@@ -10,11 +10,21 @@ const styles = StyleSheet.create({
         color: 'black',
         fontSize: 30
     },
+    iconsAdmin: {
+        marginRight: 50,
+        color: 'black',
+        fontSize: 25
+    },
     title:{
         fontFamily: 'Poppins-Black',
         fontSize: 34,
         color: 'black',
         paddingTop: 30
+    },
+    titleAdmin:{
+        fontFamily: 'Poppins-Bold',
+        fontSize: 18,
+        color: 'black',
     },
     swipe: {
         display: 'flex',
@@ -22,6 +32,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: 25,
+    },
+    swipeAdmin: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 35,
     },
     swipeText: {
         marginHorizontal: 5,
@@ -40,7 +57,8 @@ const styles = StyleSheet.create({
     cardTitle:{
         fontFamily: 'Poppins-Bold',
         fontSize: 17,
-        color: 'black'
+        color: 'black',
+        maxWidth: 220
     },
     cardPrice:{
         fontFamily: 'Poppins-Regular',

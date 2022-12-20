@@ -5,6 +5,7 @@ const initialState = {
   cart: [],
   history: [],
   nextHistory: "",
+  totalCount : 0,
   isLoading: false,
   isError: false,
   isFulfilled: false,
@@ -14,8 +15,52 @@ const initialState = {
 
 const transactionReducer = (prevState = initialState, { payload, type }) => {
   const { Pending, Rejected, Fulfilled } = ActionType;
-  const {addCart,deleteCart,authLogout, toCheckout, getHistory, deleteHistory, resetHistory} = actionStrings;
+  const {addCart,deleteCart,authLogout, toCheckout, getHistory, deleteHistory, resetHistory, getHistoryAdmin, editHistoryAdmin} = actionStrings;
   switch (type) {
+    // ============= GET HISTORY ADMIN ===========
+
+    case getHistoryAdmin.concat("_", Pending):
+    return {
+        ...prevState,
+        isLoading: true,
+        isError: false,
+        isFulfilled: false,
+        err: null,
+    };
+    case getHistoryAdmin.concat("_", Rejected):
+    return {
+        ...prevState,
+        isLoading: false,
+        isError: true,
+        isFulfilled: false,
+        err: payload.error,
+    };
+    case getHistoryAdmin.concat("_", Fulfilled):
+    return {
+        ...prevState,
+        history: prevState.history.concat(payload.data.data),
+        nextHistory: payload.data.next,
+        totalCount : payload.data.dataCount,
+        isLoading: false,
+        isError: false,
+        isFulfilled: true,
+        err: payload.data.data.length === 0 ? "data_not_found" : null,
+        confirms: false,
+    };
+    case editHistoryAdmin.concat("_", Fulfilled):
+    return {
+        ...prevState,
+        history: [],
+        nextHistory: "",
+        totalCount : 0,
+        isLoading: false,
+        isError: false,
+        isFulfilled: true,
+        err: "data_not_found",
+        confirms: false,
+    };
+
+    // =================== END ==================
     // =============== GET HISTORY ================ 
     case getHistory.concat("_", Pending):
     return {
@@ -49,6 +94,7 @@ const transactionReducer = (prevState = initialState, { payload, type }) => {
       cart: [],
       history: [],
       nextHistory: "",
+      totalCount : 0,
       isLoading: false,
       isError: false,
       isFulfilled: false,
@@ -107,6 +153,7 @@ const transactionReducer = (prevState = initialState, { payload, type }) => {
         cart: [],
         history: [],
         nextHistory: "",
+        totalCount : 0,
         isLoading: false,
         isError: false,
         isFulfilled: false,

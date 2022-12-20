@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   imageBottom: {
-    marginHorizontal: 15,
+    marginRight: 15,
     fontSize: 22,
     color: '#6A4029'
   },

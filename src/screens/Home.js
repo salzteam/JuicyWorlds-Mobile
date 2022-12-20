@@ -12,7 +12,8 @@ import {
   Pressable ,
   ScrollView,
   useWindowDimensions,
-  Modal
+  Modal,
+  ActivityIndicator
 } from 'react-native';
 
 import {useNavigation} from '@react-navigation/native'
@@ -28,10 +29,30 @@ const Home = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  useEffect(()=>{
-    dispatch(productAction.getFavoriteThunk())
-    dispatch(productAction.getPromoThunk())
-  },[dispatch])
+//   useEffect(()=>{
+//     if (product.Favorite.length === 0 || product.Product_Promo.length === 0){
+//         dispatch(productAction.getFavoriteThunk())
+//         dispatch(productAction.getPromoThunk())
+//     }
+//   },[dispatch,navigation])
+
+  useEffect(() => {
+    let refresh = false;
+    const removeFocusevent = navigation.addListener('focus', e => {
+        if (product.Favorite.length === 0 || product.Product_Promo.length === 0){
+            dispatch(productAction.getFavoriteThunk())
+            dispatch(productAction.getPromoThunk())
+        }
+    });
+    const removeBlurEvent = navigation.addListener('blur', e => {
+        refresh = true;
+        dispatch(productAction.resetProductsFulfilled())
+    });
+    return () => {
+      removeFocusevent();
+      removeBlurEvent();
+    };
+  }, [navigation,product.Favorite,product.Product_Promo]);
 
   const costing = (price) => {
     return (
@@ -48,7 +69,12 @@ const Home = () => {
             <ScrollView style={styles.container}>
                 <Text style={styles.title}>A good coffee is a good day</Text>
                 <Text style={styles.category} onPress={()=>{navigation.navigate("ProductDetail")}}>Favorite Products</Text>
-                <Text style={styles.see} onPress={()=>{navigation.navigate("ScreenFavorite")}}>See more</Text>
+                <Text style={styles.see} onPress={()=>{navigation.navigate("ScreenFavorite" , product.Favorite)}}>See more</Text>
+                {product.isLoading && product.Favorite.length === 0 ?
+                 (
+                 <View style={{justifyContent: 'center', alignItems: 'center', flex: 1, minHeight: 250}}>
+                    <ActivityIndicator size={"large"}/>
+                 </View>) :
                 <ScrollView
                     showsHorizontalScrollIndicator={false}
                     horizontal={true}
@@ -70,7 +96,7 @@ const Home = () => {
                                             </View>
                                         </Pressable>
                                         {role === "admin" && 
-                                            (<Pressable style={styles.conPencl}>
+                                            (<Pressable style={styles.conPencl} onPress={()=>navigation.navigate("EditProduct", datas)}>
                                                 <IconComunity name={"pencil"} style={styles.pencil}size={20}/>
                                             </Pressable>)
                                         }
@@ -79,9 +105,14 @@ const Home = () => {
                             )
                         }
                     })}
-                </ScrollView>
+                </ScrollView>}
                 <Text style={styles.category}>Promo for you</Text>
-                <Text style={styles.see} onPress={()=>{navigation.navigate("ScreenPromo")}}>See more</Text>
+                <Text style={styles.see} onPress={()=>{navigation.navigate("ScreenPromo", product.Product_Promo)}}>See more</Text>
+                {product.isLoading && product.Product_Promo.length === 0 ?
+                 (
+                 <View style={{justifyContent: 'center', alignItems: 'center', flex: 1, minHeight: 250}}>
+                    <ActivityIndicator size={"large"}/>
+                 </View>) :
                 <ScrollView
                     showsHorizontalScrollIndicator={false}
                     horizontal={true}
@@ -102,7 +133,7 @@ const Home = () => {
                                             </View>
                                         </Pressable>
                                         {role === "admin" && 
-                                            (<Pressable style={styles.conPencl}>
+                                            (<Pressable style={styles.conPencl} onPress={()=>navigation.navigate("EditProduct", data)}>
                                                 <IconComunity name={"pencil"} style={styles.pencil}size={20}/>
                                             </Pressable>)
                                         }
@@ -111,7 +142,7 @@ const Home = () => {
                             )
                         }
                     })}
-                </ScrollView>
+                </ScrollView>}
                 {role === "admin" &&
                     ( 
                     <>
@@ -132,12 +163,18 @@ const Home = () => {
                                     </Pressable>
                                 </View>
                                 <View style={{justifyContent: 'flex-end'}}>
-                                    <View style={styles.button}>
+                                    <Pressable style={styles.button} onPress={()=>{
+                                        setModalVisible(false)
+                                        navigation.navigate("NewProduct")
+                                    }}>
                                         <Text style={styles.modalText}>New product</Text>
-                                    </View>
-                                    <View  style={styles.button}>
+                                    </Pressable>
+                                    <Pressable  style={styles.button} onPress={()=>{
+                                        setModalVisible(false)
+                                        navigation.navigate("NewPromo")
+                                    }}>
                                         <Text style={styles.modalText}>New promo</Text>
-                                    </View>
+                                    </Pressable>
                                 </View>
                             </View>
                         </Modal>

@@ -41,6 +41,10 @@ const Login = () => {
   const handleSubmit = () => {
     if (auth.isLoading) return;
     const loginSuccess = () => {
+      setForm({
+        email: '',
+        password: '',
+      })
         ToastAndroid.showWithGravityAndOffset(
             `Welcome, Happy Shoping :)`,
             ToastAndroid.SHORT,
@@ -70,8 +74,8 @@ const Login = () => {
                 <Text style={styles.text}>Login</Text>
             </View>
             <View style={{paddingTop: "60%"}}>
-                <TextInput placeholder='Enter your email adress' placeholderTextColor={"white"} keyboardType='email-address' style={styles.input} onChangeText={text =>onChangeHandler(text, "email")}/>
-                <TextInput placeholder='Enter your password' placeholderTextColor={"white"} style={styles.input} secureTextEntry={isShow} onChangeText={text =>onChangeHandler(text, "password")}/>
+                <TextInput value={form.email} placeholder='Enter your email adress' placeholderTextColor={"white"} keyboardType='email-address' style={styles.input} onChangeText={text =>onChangeHandler(text, "email")}/>
+                <TextInput value={form.password} placeholder='Enter your password' placeholderTextColor={"white"} style={styles.input} secureTextEntry={isShow} onChangeText={text =>onChangeHandler(text, "password")}/>
                 <Icons name={isShow ? 'eye-slash' : 'eye' } style={styles.iconEye} size={15} onPress={()=>{setShow(!isShow)}}/>
                 <Text style={styles.forgot} onPress={()=>{navigation.navigate("Forgot")}}>Forgot password?</Text>
                 <View style={{marginTop: 15, width: width}}>

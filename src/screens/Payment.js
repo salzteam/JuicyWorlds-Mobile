@@ -77,7 +77,7 @@ function Payment() {
             }
             axios.post(BaseUrl,sendBody,{headers:{"x-access-token":token}}).then((result)=>{
                 setLoading(false)
-                if (Payment === "1"){
+                if (Payment === "1" || Payment === "2"){
                     Linking.openURL(result.data.redirctUrl)
                 }
                 handleShowNotification("Order Created")

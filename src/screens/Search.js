@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect,useRef} from 'react';
 
 import styles from '../styles/Search';
 import IconComunity from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -12,7 +12,8 @@ import {
     Pressable,
     TextInput,
     Modal,
-    ActivityIndicator
+    ActivityIndicator,
+    Keyboard
   } from 'react-native'; 
 
 import { FlatList } from 'react-native-gesture-handler';
@@ -32,6 +33,8 @@ function Search() {
     const [sort, setSort] = useState()
     const [price, setPrice] = useState()
 
+    const TextInputRef = useRef("input");
+
     useEffect(()=>{
         let pagination = "page=1&limit=10"
         if (filter) pagination += `&filter=${filter}`
@@ -46,19 +49,6 @@ function Search() {
             dispatch(productsAction.getProductsThunk(pagination))}
     },[filter,sort,price,inputSearch])
 
-    useEffect(() => {
-        const removeFocusevent = navigation.addListener('focus', e => {
-            // dispatch(productsAction.getProductsThunk("page=1&limit=10"))
-        });
-        const removeBlurEvent = navigation.addListener('blur', e => {
-            // dispatch(productsAction.resetProductsFulfilled());
-        });
-        return () => {
-          removeFocusevent();
-          removeBlurEvent();
-        };
-      }, [navigation,product.Products]);
-
     //   useEffect(()=>{
     //     if (product.Products.length === 0) {
     //         dispatch(productsAction.getProductsThunk("page=1&limit=10"))
@@ -67,9 +57,9 @@ function Search() {
 
     const getPagination = async () => {
         if (!product.nextPage) return;
-        if (product.isLoading) return;
+        if (product.LoadingProduct) return;
         // if (filter || sort || price) return dispatch(productsAction.getFilterThunk(product.nextPage))
-        if (!product.isLoading) dispatch(productsAction.getProductsThunk(product.nextPage))
+        if (!product.LoadingProduct) dispatch(productsAction.getProductsThunk(product.nextPage))
     }
 
     const handleKeyPress = ({ nativeEvent: { key: keyValue } }) => {
@@ -91,7 +81,7 @@ function Search() {
 
       const renderFooter = () => {
         return  (<View style={{flex: 1, paddingVertical: 20, justifyContent: 'center', paddingBottom: 10}}>
-            {product.Products.length !== 0 && product.isLoading && <ActivityIndicator size='large' color='black' />}
+            {product.Products.length !== 0 && product.LoadingProduct && <ActivityIndicator size='large' color='black' />}
             {/* {product.Products.length !== 0 && !product.nextHistory && <Text style={{textAlign: 'center', color: 'black', fontFamily: 'Poppins-Regular'}}>No more transcations history</Text>} */}
         </View>)
     }
@@ -101,6 +91,13 @@ function Search() {
         console.log(inputSearch);
     },[search, inputSearch])
 
+    const clearHandler = () => {
+        if (inputSearch.length === 0) return setInput(search)
+        if (inputSearch.length !== 0) {
+            setInput("")
+            setSearch("")
+        } 
+    }
   return (
     <View style={{flex: 1}}>
         <View style={styles.navbar}>
@@ -112,12 +109,9 @@ function Search() {
                 <View style={styles.inputContainer}>
                     <Text style={styles.filter} onPress={()=>setModalVisible(true)}>FILTER</Text>
                     <View style={styles.boxInput}>
-                        <TextInput placeholder='Input Search Here...' value={search} placeholderTextColor={"#9F9F9F"} style={styles.input} onChangeText={(text)=>{setSearch(text)}}/>
+                        <TextInput ref={TextInputRef} placeholder='Input Search Here...' value={search} placeholderTextColor={"#9F9F9F"} style={styles.input} onChangeText={setSearch}/>
                         <Divider orientation="vertical" width={1} subHeader/>
-                        <IconComunity name={inputSearch.length === 0 ? "magnify" : "window-close"} size={20} style={styles.icons} onPress={()=>{
-                            search.length !== 0 && setInput(search)
-                            search.length !== 0 && inputSearch.length !== 0 && setInput("") && setSearch("")
-                        }}/>
+                        <IconComunity name={inputSearch.length === 0 ? "magnify" : "window-close"} size={20} style={styles.icons} onPress={clearHandler}/>
                     </View>
                 </View>
                 <Text style={styles.category}>All Products</Text>
@@ -137,12 +131,12 @@ function Search() {
                             )
                         }
                     })} */}
-                {!product.isLoading && product.Products.length === 0 && (
+                {!product.LoadingProduct && product.Products.length === 0 && (
                     <View style={{justifyContent: 'center', alignItems: 'center', paddingTop: 200}}>
                         <Text style={{fontFamily: 'Poppins-Bold'}}>PRODUCT NOT FOUND</Text>
                     </View>
                 )}
-                {product.isLoading && product.Products.length === 0 ?
+                {product.LoadingProduct && product.Products.length === 0 ?
                  (
                  <View style={{justifyContent: 'center', alignItems: 'center', flex: 1, paddingTop: 200}}>
                     <ActivityIndicator size={"large"}/>
